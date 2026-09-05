@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A centralized directory for design resources, websites, books, tools, and learning materials.">
+    <title>Atrium — Design Resource Hub</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%220.9em%22 font-size=%2290%22>📚</text></svg>">
+
+    <style>
+        /* =========================================
+           1. DESIGN TOKENS & VARIABLES
+           ========================================= */
+        :root {
+            --bg: #FAFAF7;
+            --surface: #FFFFFF;
+            --text: #1A1A1A;
+            --text-muted: #6B7280;
+            --border: #E5E5E0;
+            --accent: #2D4356;
+            --accent-hover: #1F2F3B;
+            --accent-light: #E8EEF1;
+            --radius: 6px;
+            --radius-lg: 10px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --header-h: 64px;
+        }
+
+        [data-theme="dark"] {
+            --bg: #121212;
+            --surface: #1E1E1E;
+            --text: #EAEAEA;
+            --text-muted: #9CA3AF;
+            --border: #2D2D2D;
+            --accent: #7AA7C7;
+            --accent-hover: #9CC3DE;
+            --accent-light: #1E2832;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        /* =========================================
+           2. RESET & BASE STYLES
+           ========================================= */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color var(--transition), color var(--transition);
+        }
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+        input, select, textarea { font-family: inherit; font-size: 1rem; }
+
+        /* RTL Adjustments */
+        [dir="rtl"] body { font-family: 'Tahoma', 'Arial', sans-serif; }
+
+        /* =========================================
+           3. LAYOUT COMPONENTS
+           ========================================= */
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .grid { display: grid; gap: 24px; }
+
+        @media (min-width: 768px) {
+            .grid-2 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(3, 1fr); }
+            .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .stack > * + * { margin-top: 16px; }
+
+        /* Typography */
+        h1, h2, h3, h4 { font-weight: 600; line-height: 1.3; letter-spacing: -0.02em; }
+        h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin-bottom: 16px; }
+        h2 { font-size: 1.5rem; margin-bottom: 24px; }
+        h3 { font-size: 1.1rem; margin-bottom: 12px; }
+        p { color: var(--text-muted); }
+        .muted { color: var(--text-muted); font-size: 0.9rem; }
+
+        /* =========================================
+           4. HEADER & NAV
+           ========================================= */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            height: var(--header-h);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center;
+        }
+        .nav-wrapper { display: flex; align-items: center; width: 100%; gap: 32px; }
+        .logo { font-weight: 700; font-size: 1.25rem; letter-spacing: -0.03em; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: none; gap: 24px; margin-inline-start: 16px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); transition: color var(--transition); }
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a.active { color: var(--text); }
+
+        .nav-actions { display: flex; align-items: center; gap: 12px; margin-inline-start: auto; }
+
+        .icon-btn {
+            width: 36px; height: 36px; border-radius: var(--radius);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted); transition: background var(--transition), color var(--transition);
+        }
+        .icon-btn:hover { background: var(--accent-light); color: var(--text); }
+
+        .search-trigger {
+            display: flex; align-items: center; gap: 8px;
+            height: 36px; padding: 0 12px; border: 1px solid var(--border);
+            border-radius: var(--radius); color: var(--text-muted);
+            font-size: 0.85rem; background: var(--bg); transition: all var(--transition);
+        }
+        .search-trigger:hover { border-color: var(--accent); color: var(--text); }
+        .search-trigger kbd {
+            font-family: inherit; font-size: 0.75rem; padding: 2px 6px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+        }
+
+        .lang-btn { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); padding: 0 8px; }
+        .lang-btn:hover { color: var(--text); }
+
+        @media (min-width: 768px) {
+            .nav-links { display: flex; }
+            .mobile-menu-btn { display: none; }
+        }
+        .mobile-menu-btn { display: block; }
+
+        /* =========================================
+           5. BUTTONS & BADGES
+           ========================================= */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            height: 38px; padding: 0 16px; border-radius: var(--radius);
+            font-weight: 500; font-size: 0.9rem; transition: all var(--transition);
+            border: 1px solid transparent; text-decoration: none;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-outline { background: transparent; border-color: var(--border); color: var(--text); }
+        .btn-outline:hover { border-color: var(--text); }
+        .btn-sm { height: 32px; padding: 0 12px; font-size: 0.8rem; }
+        .btn-danger { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
+        .btn-danger:hover { background: rgba(220, 38, 38, 0.2); }
+
+        .badge {
+            display: inline-flex; align-items: center;
+            padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            background: var(--accent-light); color: var(--accent);
+        }
+        .badge-success { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: #d97706; }
+        .badge-danger { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
+        [data-theme="dark"] .badge-success { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        [data-theme="dark"] .badge-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        [data-theme="dark"] .badge-danger { background: rgba(220, 38, 38, 0.2); color: #f87171; }
+
+        .tag {
+            font-size: 0.75rem; color: var(--text-muted);
+            background: var(--bg); border: 1px solid var(--border);
+            padding: 2px 8px; border-radius: 4px; cursor: pointer;
+            transition: all var(--transition); display: inline-block;
+        }
+        .tag:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* =========================================
+           6. CARDS
+           ========================================= */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            height: 100%; display: flex; flex-direction: column;
+        }
+        .card:hover { border-color: var(--text-muted); box-shadow: var(--shadow-sm); }
+
+        .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .card-icon { width: 40px; height: 40px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent); flex-shrink: 0; overflow: hidden; }
+        .card-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+        .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-footer { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+        .card-meta { display: flex; gap: 8px; font-size: 0.75rem; color: var(--text-muted); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+        .card-actions { margin-top: 12px; display: flex; gap: 8px; }
+
+        /* Book specific card */
+        .book-card { display: flex; gap: 16px; }
+        .book-cover { width: 80px; height: 120px; background: var(--bg); border-radius: 4px; object-fit: cover; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+
+        /* =========================================
+           7. SEARCH OVERLAY
+           ========================================= */
+        .search-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.5);
+            display: flex; align-items: flex-start; justify-content: center;
+            padding-top: 10vh;
+            opacity: 0; pointer-events: none; transition: opacity var(--transition);
+        }
+        .search-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .search-modal {
+            width: 100%; max-width: 640px; background: var(--surface);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
+            border: 1px solid var(--border); overflow: hidden;
+            transform: scale(0.98); transition: transform var(--transition);
+        }
+        .search-overlay.active .search-modal { transform: scale(1); }
+
+        .search-input-wrap { display: flex; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+        .search-input-wrap svg { color: var(--text-muted); margin-inline-end: 12px; }
+        .search-input { flex: 1; border: none; outline: none; background: none; color: var(--text); font-size: 1.1rem; }
+        .search-input::placeholder { color: var(--text-muted); }
+
+        .search-results { max-height: 60vh; overflow-y: auto; padding: 8px 0; }
+        .search-group-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); padding: 8px 20px; font-weight: 600; }
+        .search-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: background var(--transition); }
+        .search-item:hover, .search-item.active { background: var(--accent-light); }
+        .search-item-title { font-size: 0.9rem; font-weight: 500; }
+        .search-item-desc { font-size: 0.8rem; color: var(--text-muted); margin-inline-start: auto; }
+
+        .search-footer { display: flex; justify-content: between; padding: 12px 20px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); }
+        .search-footer kbd { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 0.7rem; }
+
+        /* =========================================
+           8. SECTIONS — HERO (REDESIGNED)
+           ========================================= */
+        .hero {
+            text-align: center;
+            padding: 96px 24px 80px;
+            max-width: 880px;
+            margin: 0 auto;
+        }
+
+        .hero-inner { display: flex; flex-direction: column; align-items: center; }
+
+        .hero-eyebrow {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em;
+            text-transform: uppercase; color: var(--text-muted); margin-bottom: 28px;
+        }
+
+        .hero-title {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 700; letter-spacing: -0.045em; line-height: 1;
+            margin: 0 0 24px 0; color: var(--text);
+        }
+
+        .hero-dot { color: var(--accent); }
+
+        .hero-description {
+            font-family: 'Lora', Georgia, serif; font-style: italic; font-weight: 400;
+            font-size: clamp(1.05rem, 1.6vw, 1.2rem); color: var(--text-muted);
+            max-width: 580px; line-height: 1.6; margin: 0 0 48px 0;
+        }
+
+        .hero-search { display: flex; gap: 12px; margin: 0 auto 56px; max-width: 640px; width: 100%; }
+        .hero-search input {
+            flex: 1; height: 56px; padding: 0 20px; border-radius: var(--radius);
+            border: 1px solid var(--border); background: var(--surface); color: var(--text);
+            outline: none; transition: border var(--transition); font-size: 1rem;
+        }
+        .hero-search input:focus { border-color: var(--accent); }
+        .hero-search input:hover { border-color: var(--text-muted); }
+        .hero-search button {
+            height: 56px; padding: 0 28px; background: var(--accent); color: #fff;
+            border-radius: var(--radius); font-weight: 500; font-size: 0.95rem;
+            transition: background var(--transition); white-space: nowrap;
+        }
+        .hero-search button:hover { background: var(--accent-hover); }
+
+        .hero-discovery { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+
+        .hero-discovery-label {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;
+        }
+
+        .hero-disciplines { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 680px; }
+
+        .hero-discipline {
+            padding: 8px 16px; background: transparent; border: 1px solid var(--border);
+            border-radius: var(--radius); font-size: 0.875rem; font-weight: 500;
+            color: var(--text); transition: all var(--transition); cursor: pointer; white-space: nowrap;
+        }
+        .hero-discipline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+        .hero-view-all {
+            margin-top: 8px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted);
+            transition: color var(--transition), border-color var(--transition);
+            border-bottom: 1px solid var(--border); padding-bottom: 2px;
+        }
+        .hero-view-all:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+        /* Subtle editorial entrance animation */
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-eyebrow { animation: heroFadeUp 500ms cubic-bezier(0.4, 0, 0.2, 1) 0ms both; }
+        .hero-title { animation: heroFadeUp 600ms cubic-bezier(0.4, 0, 0.2, 1) 60ms both; }
+        .hero-description { animation: heroFadeUp 600ms cubic-bezier(0.4, 0, 0.2, 1) 140ms both; }
+        .hero-search { animation: heroFadeUp 600ms cubic-bezier(0.4, 0, 0.2, 1) 220ms both; }
+        .hero-discovery { animation: heroFadeUp 600ms cubic-bezier(0.4, 0, 0.2, 1) 300ms both; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-eyebrow, .hero-title, .hero-description, .hero-search, .hero-discovery { animation: none; }
+        }
+
+        /* Responsive: Hero */
+        @media (max-width: 768px) {
+            .hero { padding: 64px 24px 56px; }
+            .hero-eyebrow { font-size: 0.68rem; letter-spacing: 0.18em; margin-bottom: 20px; }
+            .hero-title { font-size: clamp(2.5rem, 11vw, 3.5rem); margin-bottom: 18px; }
+            .hero-description { font-size: 1rem; margin-bottom: 36px; }
+            .hero-search { margin-bottom: 40px; }
+            .hero-disciplines { gap: 6px; }
+            .hero-discipline { padding: 7px 13px; font-size: 0.82rem; }
+        }
+
+        @media (max-width: 430px) {
+            .hero { padding: 48px 20px 44px; }
+            .hero-eyebrow { font-size: 0.62rem; letter-spacing: 0.14em; margin-bottom: 16px; }
+            .hero-description { font-size: 0.95rem; margin-bottom: 32px; }
+            .hero-search input { height: 52px; }
+            .hero-search button { height: 52px; padding: 0 20px; font-size: 0.9rem; }
+            .hero-disciplines { gap: 6px; }
+            .hero-discipline { padding: 6px 12px; font-size: 0.8rem; }
+        }
+
+        @media (max-width: 375px) {
+            .hero-eyebrow { font-size: 0.58rem; letter-spacing: 0.12em; }
+            .hero-discipline { padding: 6px 10px; font-size: 0.78rem; }
+        }
+
+        /* Section + section-header (unchanged) */
+        section { padding: 32px 0; }
+        .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        .section-header a { font-size: 0.85rem; color: var(--accent); font-weight: 500; }
+
+        /* =========================================
+           9. FILTERS & DIRECTORY
+           ========================================= */
+        .directory-layout { display: grid; grid-template-columns: 1fr; gap: 32px; padding: 32px 0; }
+        @media (min-width: 1024px) { .directory-layout { grid-template-columns: 240px 1fr; } }
+
+        .filters-sidebar { display: none; }
+        @media (min-width: 1024px) { .filters-sidebar { display: block; position: sticky; top: calc(var(--header-h) + 24px); height: fit-content; } }
+
+        .filter-group { margin-bottom: 24px; }
+        .filter-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; }
+        .filter-list { display: flex; flex-direction: column; gap: 8px; }
+        .filter-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer; color: var(--text); }
+        .filter-item input { accent-color: var(--accent); }
+        .filter-item span.count { margin-inline-start: auto; color: var(--text-muted); font-size: 0.8rem; }
+
+        .results-header { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .results-count { font-size: 0.9rem; color: var(--text-muted); }
+        .sort-select { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 0.85rem; color: var(--text); outline: none; }
+
+        .active-filters-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 24px; }
+        .active-filter { background: var(--accent-light); color: var(--accent); padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
+        .active-filter button { color: var(--accent); display: flex; align-items: center; background: none; border: none; cursor: pointer; font-size: 1rem; line-height: 1; }
+
+        .mobile-filter-btn { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); padding: 8px 16px; border-radius: var(--radius); font-size: 0.9rem; }
+        @media (min-width: 1024px) { .mobile-filter-btn { display: none; } }
+
+        .load-more-wrap { text-align: center; margin-top: 32px; }
+
+        /* Explore search & mobile filters */
+        .explore-search-input { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 0.85rem; color: var(--text); outline: none; width: 200px; transition: border var(--transition); }
+        .explore-search-input:focus { border-color: var(--accent); }
+        .results-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .filter-badge { background: var(--accent); color: #fff; border-radius: 50px; padding: 1px 7px; font-size: 0.7rem; font-weight: 600; min-width: 18px; text-align: center; }
+        .empty-state { text-align: center; padding: 64px 24px; color: var(--text-muted); }
+        .empty-state h3 { margin-bottom: 8px; color: var(--text); }
+
+        .mobile-filter-overlay { position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity var(--transition); }
+        .mobile-filter-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-filter-drawer { width: 100%; max-width: 480px; background: var(--surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 80vh; display: flex; flex-direction: column; }
+        .mobile-filter-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+        .mobile-filter-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+        .mobile-filter-footer { display: flex; gap: 12px; justify-content: space-between; padding: 16px 20px; border-top: 1px solid var(--border); }
+        @media (min-width: 1024px) { .mobile-filter-overlay { display: none !important; } }
+        @media (max-width: 768px) { .explore-search-input { width: 100%; } }
+
+        /* =========================================
+           10. DETAIL PAGE
+           ========================================= */
+        .detail-layout { padding: 48px 0; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; transition: color var(--transition); }
+        .back-link:hover { color: var(--text); }
+
+        .detail-grid { display: grid; grid-template-columns: 1fr; gap: 48px; }
+        @media (min-width: 768px) { .detail-grid { grid-template-columns: 240px 1fr; } }
+
+        .detail-cover { width: 100%; max-width: 240px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+        .detail-meta { display: grid; grid-template-columns: 120px 1fr; gap: 8px 16px; margin: 24px 0; font-size: 0.9rem; }
+        .detail-meta dt { color: var(--text-muted); }
+        .detail-meta dd { color: var(--text); }
+
+        .detail-actions { display: flex; flex-direction: column; gap: 12px; margin: 24px 0; }
+
+        /* =========================================
+           11. ADMIN DASHBOARD
+           ========================================= */
+        .admin-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 24px 0; margin-bottom: 32px; }
+        .admin-nav { display: flex; gap: 16px; overflow-x: auto; margin-top: 16px; }
+        .admin-nav a { padding: 8px 16px; border-radius: var(--radius); font-size: 0.9rem; font-weight: 500; color: var(--text-muted); white-space: nowrap; }
+        .admin-nav a.active { background: var(--accent-light); color: var(--accent); }
+
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+        .admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        [dir="rtl"] .admin-table th, [dir="rtl"] .admin-table td { text-align: right; }
+        .admin-table th { font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+        .admin-table tr:hover { background: var(--bg); }
+
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 768px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); outline: none; transition: border var(--transition); }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .form-check { display: flex; align-items: center; gap: 8px; }
+        .form-check input { accent-color: var(--accent); }
+
+        /* =========================================
+           12. FOOTER
+           ========================================= */
+        footer { margin-top: 64px; border-top: 1px solid var(--border); background: var(--surface); }
+        .footer-content { display: grid; grid-template-columns: 1fr; gap: 32px; padding: 48px 0; }
+        @media (min-width: 768px) { .footer-content { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+        .footer-col h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 16px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .footer-col a { font-size: 0.9rem; color: var(--text); transition: color var(--transition); }
+        .footer-col a:hover { color: var(--accent); }
+        .footer-bottom { padding: 24px 0; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+        /* =========================================
+           13. UTILITY
+           ========================================= */
+        .hidden { display: none !important; }
+        *:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* =========================================
+           14. FILTER INTERACTION POLISH (approved UX — unchanged)
+           ========================================= */
+        :root {
+            --fx-out: 120ms;
+            --fx-in: 200ms;
+            --fx-ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .filter-item {
+            padding: 4px 8px;
+            margin-inline: -8px;
+            border-radius: var(--radius);
+            transition: background-color var(--fx-in) var(--fx-ease),
+                        color var(--fx-in) var(--fx-ease);
+        }
+        .filter-item:hover { background: var(--surface); }
+        .mobile-filter-body .filter-item:hover { background: var(--bg); }
+        .filter-item:has(input:checked),
+        .filter-item.is-active {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .filter-item span.count { font-weight: 400; color: var(--text-muted); }
+
+        .filter-item input[type="checkbox"] {
+            appearance: none; -webkit-appearance: none;
+            width: 15px; height: 15px; flex: 0 0 auto; margin: 0;
+            border: 1.5px solid var(--border); border-radius: 4px;
+            background: var(--surface); cursor: pointer;
+            transition: background-color var(--fx-out) var(--fx-ease),
+                        border-color var(--fx-out) var(--fx-ease);
+        }
+        .filter-item input[type="checkbox"]:hover { border-color: var(--accent); }
+        .filter-item input[type="checkbox"]:checked {
+            background-color: var(--accent); border-color: var(--accent);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+            background-size: 9px 9px; background-position: center; background-repeat: no-repeat;
+        }
+        [data-theme="dark"] .filter-item input[type="checkbox"]:checked {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23121212' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+        }
+
+        .results-transition {
+            transition: opacity var(--fx-out) var(--fx-ease),
+                        transform var(--fx-out) var(--fx-ease);
+        }
+        .results-transition.is-exiting { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+        .results-transition.is-entering { animation: resultsEnter var(--fx-in) var(--fx-ease); }
+        @keyframes resultsEnter { from { opacity: 0; transform: translateY(8px); } }
+
+        .results-count.is-updating { animation: countSettle 220ms var(--fx-ease); }
+        @keyframes countSettle { from { opacity: 0; transform: translateY(3px); } }
+
+        .active-filter {
+            transition: opacity var(--fx-out) var(--fx-ease),
+                        transform var(--fx-out) var(--fx-ease);
+        }
+        .active-filter.is-entering { animation: chipEnter 180ms var(--fx-ease); }
+        @keyframes chipEnter { from { opacity: 0; transform: scale(0.92); } }
+        .active-filter.is-removing { animation: chipRemove 120ms ease forwards; pointer-events: none; }
+        @keyframes chipRemove { to { opacity: 0; transform: scale(0.92); } }
+
+        @media (prefers-reduced-motion: reduce) {
+            .results-transition, .results-count, .active-filter,
+            .filter-item, .filter-item input[type="checkbox"] {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
+
+        /* =========================================
+           15. DATA-SCALE COMPATIBILITY (appended)
+           The restored dataset has 28 categories; this single rule keeps
+           the sticky desktop sidebar scrollable so every filter row stays
+           reachable. No other visual change.
+           ========================================= */
+        @media (min-width: 1024px) {
+            .filters-sidebar { max-height: calc(100vh - var(--header-h) - 48px); overflow-y: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo" onclick="navigate('home')">Atrium<span>.</span></a>
+
+            <nav class="nav-links">
+                <a href="#" onclick="navigate('home')" data-i18n="nav_home">Home</a>
+                <a href="#" onclick="navigate('explore')" data-i18n="nav_explore">Explore</a>
+                <a href="#" onclick="navigate('books')" data-i18n="nav_books">Books</a>
+                <a href="#" onclick="navigate('categories')" data-i18n="nav_categories">Categories</a>
+                <a href="#" onclick="navigate('admin')" data-i18n="nav_admin">Admin</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="search-trigger" onclick="openSearch()" aria-label="Search">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <span class="hidden-mobile" data-i18n="search">Search</span>
+                    <kbd class="hidden-mobile">⌘K</kbd>
+                </button>
+                <button class="lang-btn" onclick="toggleLang()" id="lang-toggle">عربي</button>
+                <button class="icon-btn" onclick="toggleTheme()" id="theme-toggle" aria-label="Toggle dark mode">
+                    <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <button class="icon-btn" onclick="navigate('saved')" aria-label="Bookmarks">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-root"></main>
+
+    <div class="search-overlay" id="search-overlay" onclick="if(event.target === this) closeSearch()">
+        <div class="search-modal" role="dialog" aria-modal="true">
+            <div class="search-input-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" id="search-input" placeholder="Search websites, books, tools, resources..." autocomplete="off" oninput="renderSearchResults(this.value)" onkeydown="searchKeydown(event)">
+                <button onclick="closeSearch()" class="muted" style="font-size: 0.8rem">Esc</button>
+            </div>
+            <div class="search-results" id="search-results"></div>
+            <div class="search-footer">
+                <span data-i18n="search_footer">Search across the entire design archive</span>
+                <div>
+                    <kbd>↑</kbd> <kbd>↓</kbd> <span data-i18n="navigate">navigate</span> <kbd>Enter</kbd> <span data-i18n="select">select</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile filter drawer (structure unchanged) -->
+    <div class="mobile-filter-overlay" id="mobile-filter-overlay" onclick="if(event.target === this) closeMobileFilters()">
+        <div class="mobile-filter-drawer" role="dialog" aria-modal="true">
+            <div class="mobile-filter-header">
+                <h3 style="margin:0" data-i18n="filters">Filters</h3>
+                <button class="icon-btn" onclick="closeMobileFilters()" aria-label="Close">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="mobile-filter-body" id="mobile-filter-body"></div>
+            <div class="mobile-filter-footer">
+                <button class="btn btn-outline" onclick="clearMobilePending()" data-i18n="clear_all">Clear all</button>
+                <button class="btn btn-primary" onclick="applyMobileFilters()" data-i18n="apply_filters">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3 class="logo">Atrium<span>.</span></h3>
+                    <p class="muted" style="margin-top: 8px; font-size: 0.9rem;" data-i18n="footer_about">An independent directory of design resources. Curated for students, professionals, and creatives.</p>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="nav_browse">Browse</h4>
+                    <ul>
+                        <li><a href="#" onclick="navigate('explore')" data-i18n="nav_explore">Explore</a></li>
+                        <li><a href="#" onclick="navigate('books')" data-i18n="nav_books">Books</a></li>
+                        <li><a href="#" onclick="navigate('categories')" data-i18n="nav_categories">Categories</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="nav_contribute">Contribute</h4>
+                    <ul>
+                        <li><a href="#" onclick="navigate('submit')" data-i18n="submit_resource">Submit Resource</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="nav_about">About</h4>
+                    <ul>
+                        <li><a href="#" onclick="navigate('about')" data-i18n="about_atrium">About Atrium</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span data-i18n="copyright">© 2023 Atrium Design Directory. Built for designers.</span>
+                <span data-i18n="sample_data">Sample Prototype Data</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // =========================================
+        // 1. I18N & TRANSLATIONS (preserved from provided file)
+        // =========================================
+        const i18n = {
+            en: {
+                nav_home: "Home", nav_explore: "Explore", nav_books: "Books", nav_categories: "Categories", nav_admin: "Admin",
+                search: "Search", search_footer: "Search across the entire design archive", navigate: "navigate", select: "select",
+                submit_resource: "Submit Resource", footer_about: "An independent directory of design resources. Curated for students, professionals, and creatives.",
+                nav_browse: "Browse", nav_contribute: "Contribute", nav_about: "About", about_atrium: "About Atrium",
+                copyright: "© 2023 Atrium Design Directory. Built for designers.", sample_data: "Sample Prototype Data",
+                visit_website: "Visit Website", open_tool: "Open Tool", view_course: "View Course", read_article: "Read Article", watch_video: "Watch Video",
+                read_book: "Read Book", open_pdf: "Open PDF", download_pdf: "Download PDF", open_drive: "Open in Google Drive", open_mega: "Open in Mega",
+                open_dropbox: "Open in Dropbox", open_archive: "Open in Internet Archive", open_library: "Open in Open Library",
+                buy_book: "Buy Book", official_website: "Official Website", save: "Save", saved: "Saved", report_broken: "Report Broken Link",
+                access_book: "Access Book", related_books: "Related Books", related_resources: "Related Resources", tags: "Tags", description: "Description",
+                category: "Category", subcategory: "Subcategory", pricing: "Pricing", platform: "Platform", language: "Language", difficulty: "Difficulty",
+                status: "Status", author: "Author", publisher: "Publisher", year: "Year", pages: "Pages", isbn: "ISBN",
+                free: "Free", paid: "Paid", freemium: "Freemium", open_source: "Open Source", featured: "Featured", recommended: "Recommended", popular: "Popular", open_access: "Open Access",
+                add_resource: "Add Resource", edit_resource: "Edit Resource", add_book: "Add Book", edit_book: "Edit Book", admin_panel: "Admin Dashboard",
+                manage_resources: "Manage Resources", manage_books: "Manage Books", resource_type: "Resource Type", title: "Title", arabic_title: "Arabic Title",
+                actions: "Actions", active: "Active", broken: "Broken", archived: "Archived", under_review: "Under Review",
+                access_type: "Access Type", uploaded_pdf: "Uploaded PDF", google_drive: "Google Drive", mega: "Mega", dropbox: "Dropbox",
+                internet_archive: "Internet Archive", open_library: "Open Library", other_url: "Other URL", upload_pdf: "Upload PDF", access_url: "Access URL",
+                copyright_note: "Copyright / Access Note", no_results: "No results found",
+                form_name: "Resource Name", form_url: "Website URL", form_logo: "Logo URL", form_tags: "Tags (comma separated)", form_platform: "Platform", form_desc: "Description",
+                form_subtitle: "Subtitle", form_cover: "Cover Image URL", form_official_url: "Official URL", form_purchase_url: "Purchase URL", form_read_url: "Read Online URL",
+                save_resource: "Save Resource", save_book: "Save Book", cancel: "Cancel", delete: "Delete", edit: "Edit", archive: "Archive",
+                hero_eyebrow: "THE DESIGN RESOURCE LIBRARY",
+                hero_description: "A curated library of tools, books, references, and learning resources for designers.",
+                hero_explore_label: "Explore by discipline",
+                hero_view_all: "View all",
+                discipline_industrial: "Industrial Design", discipline_uiux: "UI/UX", discipline_3d: "3D", discipline_motion: "Motion",
+                discipline_typography: "Typography", discipline_architecture: "Architecture", category_audio_sfx: "Audio & SFX",
+                filter_category: "Category", filter_pricing: "Pricing", filter_language: "Language",
+                clear_all: "Clear all", results_count: "{count} resources", results_matching: "{count} resources matching your filters",
+                no_results_title: "No resources match your selected filters", no_results_desc: "Try adjusting or clearing your filters.",
+                sort_relevance: "Sort: Relevance", sort_popularity: "Sort: Popularity", sort_alpha: "Sort: Alphabetical",
+                explore_title: "Explore Directory", search_resources: "Search resources...", filters: "Filters",
+                apply_filters: "Apply Filters", load_more: "Load More", close: "Close",
+            },
+            ar: {
+                nav_home: "الرئيسية", nav_explore: "استكشاف", nav_books: "الكتب", nav_categories: "التصنيفات", nav_admin: "الإدارة",
+                search: "بحث", search_footer: "ابحث في أرشيف التصميم بالكامل", navigate: "للتنقل", select: "للاختيار",
+                submit_resource: "إضافة مصدر", footer_about: "دليل مستقل لموارد التصميم. منظم للطلاب والمحترفين والمبدعين.",
+                nav_browse: "تصفح", nav_contribute: "مساهمة", nav_about: "حول", about_atrium: "حول أتريوم",
+                copyright: "© 2023 دليل أتريوم للتصميم. صُمم للمصممين.", sample_data: "بيانات نموذجية",
+                visit_website: "زيارة الموقع", open_tool: "فتح الأداة", view_course: "عرض الدورة", read_article: "قراءة المقال", watch_video: "مشاهدة الفيديو",
+                read_book: "قراءة الكتاب", open_pdf: "فتح PDF", download_pdf: "تحميل PDF", open_drive: "فتح في جوجل درايف", open_mega: "فتح في ميغا",
+                open_dropbox: "فتح في دروبوكس", open_archive: "فتح في أرشيف الإنترنت", open_library: "فتح في المكتبة المفتوحة",
+                buy_book: "شراء الكتاب", official_website: "الموقع الرسمي", save: "حفظ", saved: "محفوظ", report_broken: "الإبلاغ عن رابط معطوب",
+                access_book: "الوصول للكتاب", related_books: "كتب ذات صلة", related_resources: "موارد ذات صلة", tags: "الوسوم", description: "الوصف",
+                category: "التصنيف", subcategory: "التصنيف الفرعي", pricing: "التسعير", platform: "المنصة", language: "اللغة", difficulty: "المستوى",
+                status: "الحالة", author: "المؤلف", publisher: "الناشر", year: "السنة", pages: "الصفحات", isbn: "ISBN",
+                free: "مجاني", paid: "مدفوع", freemium: "مجاني جزئياً", open_source: "مفتوح المصدر", featured: "مميز", recommended: "موصى به", popular: "شائع", open_access: "وصول مفتوح",
+                add_resource: "إضافة مصدر", edit_resource: "تعديل المصدر", add_book: "إضافة كتاب", edit_book: "تعديل الكتاب", admin_panel: "لوحة الإدارة",
+                manage_resources: "إدارة الموارد", manage_books: "إدارة الكتب", resource_type: "نوع المصدر", title: "العنوان", arabic_title: "العنوان بالعربية",
+                actions: "إجراءات", active: "نشط", broken: "معطوب", archived: "مؤرشف", under_review: "قيد المراجعة",
+                access_type: "نوع الوصول", uploaded_pdf: "PDF مرفوع", google_drive: "جوجل درايف", mega: "ميغا", dropbox: "دروبوكس",
+                internet_archive: "أرشيف الإنترنت", open_library: "المكتبة المفتوحة", other_url: "رابط آخر", upload_pdf: "رفع PDF", access_url: "رابط الوصول",
+                copyright_note: "ملاحظة حقوق النشر / الوصول", no_results: "لا توجد نتائج",
+                form_name: "اسم المصدر", form_url: "رابط الموقع", form_logo: "رابط الشعار", form_tags: "وسوم (مفصولة بفواصل)", form_platform: "المنصة", form_desc: "الوصف",
+                form_subtitle: "العنوان الفرعي", form_cover: "رابط صورة الغلاف", form_official_url: "الرابط الرسمي", form_purchase_url: "رابط الشراء", form_read_url: "رابط القراءة",
+                save_resource: "حفظ المصدر", save_book: "حفظ الكتاب", cancel: "إلغاء", delete: "حذف", edit: "تعديل", archive: "أرشفة",
+                hero_eyebrow: "مكتبة موارد التصميم",
+                hero_description: "مكتبة منسقة من الأدوات والكتب والمراجع ومصادر التعلم للمصممين.",
+                hero_explore_label: "استكشف حسب التخصص",
+                hero_view_all: "عرض الكل",
+                discipline_industrial: "التصميم الصناعي", discipline_uiux: "واجهات وتجربة المستخدم", discipline_3d: "ثري دي", discipline_motion: "الموشن جرافيك",
+                discipline_typography: "الطباعة", discipline_architecture: "العمارة", category_audio_sfx: "الصوتيات والمؤثرات الصوتية",
+                filter_category: "التصنيف", filter_pricing: "التسعير", filter_language: "اللغة",
+                clear_all: "مسح الكل", results_count: "{count} مورد", results_matching: "{count} مورد مطابق للفلاتر",
+                no_results_title: "لا توجد موارد مطابقة للفلاتر المحددة", no_results_desc: "حاول تعديل أو مسح الفلاتر.",
+                sort_relevance: "ترتيب: الصلة", sort_popularity: "ترتيب: الشعبية", sort_alpha: "ترتيب: أبجدي",
+                explore_title: "استكشاف الدليل", search_resources: "ابحث في الموارد...", filters: "الفلاتر",
+                apply_filters: "تطبيق الفلاتر", load_more: "تحميل المزيد", close: "إغلاق",
+            }
+        };
+
+        // =========================================
+        // 2. RESOURCE DESCRIPTIONS DICTIONARY
+        //    (verbatim from the provided source file — 71 entries)
+        // =========================================
+        const resourceDescriptions = {
+            "Behance": "Creative portfolio platform for discovering graphic design, branding, illustration, UI/UX, photography, and other creative work.",
+            "Dribbble": "Community for designers to share screenshots of their work, focusing on UI/UX, illustration, and branding.",
+            "Pinterest": "Visual discovery engine for finding inspiration, mood boards, and design references across all disciplines.",
+            "Designspiration": "Image-based search engine for finding design, typography, and illustration inspiration.",
+            "Are.na": "A platform for connecting ideas and building knowledge collaboratively.",
+            "Muzli": "Design inspiration browser extension bringing the best design news and shots to your new tab.",
+            "Godly": "Curated gallery of the best web design inspiration, focusing on modern digital UI.",
+            "Awwwards": "Website awards and inspiration gallery for web designers and developers.",
+            "SiteInspire": "Web design inspiration gallery showcasing the finest HTML and CSS sites.",
+            "One Page Love": "Gallery of beautiful One Page websites for design inspiration.",
+            "Httpster": "Directory of beautifully designed HTTP websites.",
+            "Land-book": "Gallery of the finest landing pages for design inspiration.",
+            "Minimal Gallery": "Curated gallery of minimalist web design inspiration.",
+            "BP&O": "Brand, packaging, and opinion blog focusing on corporate and brand identity.",
+            "The Designest": "Online magazine covering graphic design, branding, and typography.",
+            "Cargo Collective": "Website builder and publishing platform for creatives.",
+            "Brand New": "Blog offering opinions on corporate and brand identity work.",
+            "Identity Designed": "Showcase of brand identity work from around the world.",
+            "The Brand Identity": "Design blog dedicated to brand identity and packaging.",
+            "Core77": "Design magazine and resource platform focused on industrial design and product design.",
+            "Yanko Design": "Industrial design magazine covering products, concepts, and technology.",
+            "Dezeen": "Architecture and design magazine featuring the world's best projects.",
+            "Designboom": "First online architecture and design magazine.",
+            "Design Milk": "Modern design blog covering interior, architecture, and product design.",
+            "Packaging of the World": "Gallery of outstanding package designs from around the world.",
+            "Dieline": "Blog dedicated to packaging design industry news and inspiration.",
+            "Product Hunt": "Discovery platform for the best new mobile apps, websites, and tech products.",
+            "ArtStation": "Showcase platform for artists working in games, film, media, and entertainment.",
+            "Character Design References": "Library of high-quality character design references for artists.",
+            "Line of Action": "Tool for practicing figure drawing with timed reference photos.",
+            "QuickPoses": "Resource for practicing drawing from life models and poses.",
+            "SketchDaily": "Reference image database for artists to practice figure drawing.",
+            "PoseMy.Art": "3D posing tool for artists to create custom character references.",
+            "Magic Poser": "3D posing app for drawing reference on mobile and desktop.",
+            "Proko": "Art education platform offering courses on drawing, anatomy, and more.",
+            "AdorkaStock": "Stock photo gallery focused on pose references for artists.",
+            "Croquis Cafe": "Reference photos and videos for figure drawing artists.",
+            "Reference.Pictures": "High-quality photo references for digital and traditional artists.",
+            "Bodies in Motion": "Photo reference library of the human figure in motion.",
+            "Animal Photo Reference": "Photo reference library for drawing animals.",
+            "Unsplash": "High-resolution stock photos contributed by photographers worldwide.",
+            "Pexels": "Free stock photos, videos, and mockups for designers.",
+            "Sketchfab": "Platform to publish, share, and discover 3D, VR, and AR content.",
+            "CGTrader": "3D model marketplace for computer graphics and AR/VR.",
+            "TurboSquid": "3D marketplace for professional 3D models.",
+            "3Dsky": "3D model sharing community for architecture and interior design.",
+            "Free3D": "Directory of free and premium 3D models.",
+            "Blend Swap": "Community for sharing Blender 3D models and assets.",
+            "Poly Haven": "Free, high-quality 3D assets, textures, and HDRIs for 3D rendering.",
+            "Quixel Megascans": "Massive library of scanned 3D assets and materials for 3D rendering.",
+            "Mixamo": "Free 3D character animation tool and library by Adobe.",
+            "MakeHuman": "Open-source tool for creating 3D characters for 3D rendering.",
+            "Human Generator": "3D model generator for creating realistic human models.",
+            "DAZ 3D": "3D software and content provider for digital art and animation.",
+            "GrabCAD": "Community for mechanical engineers to share CAD files and designs.",
+            "TraceParts": "Digital 3D parts library for mechanical and industrial engineers.",
+            "3Dfindit": "Search engine for finding 3D CAD models from manufacturers.",
+            "3D ContentCentral": "Free 3D CAD models, assemblies, and parts from component manufacturers.",
+            "McMaster-Carr": "Supplier of hardware, tools, and raw materials for manufacturing and engineering.",
+            "PARTcommunity": "Online 3D CAD parts catalog for engineers.",
+            "BIMobject": "Cloud platform for BIM objects and architectural components.",
+            "ARCAT": "Building material information and CAD library for architects.",
+            "IDEO": "Global design and innovation consultancy for product and service design.",
+            "frog": "Global creative and innovation consultancy focusing on industrial design and tech.",
+            "Cooper Hewitt": "Design museum featuring contemporary and historic design objects.",
+            "Smithsonian Design Museum": "Museum dedicated to contemporary and historic design.",
+            "Xometry": "Manufacturing marketplace for custom CNC machining, 3D printing, and injection molding.",
+            "Hubs": "Online manufacturing platform for custom parts and prototypes.",
+            "Protolabs": "Digital manufacturing service for rapid prototyping and production.",
+            "Fictiv": "Digital manufacturing partner for custom hardware and product development.",
+            "PCBWay": "Manufacturer of custom printed circuit boards (PCBs) for electronics."
+        };
+
+        // =========================================
+        // 3. CATEGORIES — 28 (existing 20 + 8 restored categories)
+        //    Ordered to match the supplied restoration list.
+        //    Existing ids/labels unchanged; only appended to.
+        // =========================================
+        const CATEGORIES = [
+            { id: '3d',             en: '3D',                       ar: 'ثلاثي الأبعاد' },
+            { id: '3d-software',    en: '3D Software',              ar: 'برامج ثلاثية الأبعاد' },
+            { id: 'ai',             en: 'AI Design Tools',          ar: 'أدوات الذكاء الاصطناعي' },
+            { id: 'motion',         en: 'Animation / Motion',       ar: 'الأنيميشن والموشن' },
+            { id: 'architecture',   en: 'Architecture',             ar: 'العمارة' },
+            { id: 'art',            en: 'Art / Illustration',       ar: 'الفن والتوضيح' },
+            { id: 'audio',          en: 'Audio & SFX',              ar: 'الصوت والمؤثرات' },
+            { id: 'cad-engineering',en: 'CAD / Engineering',        ar: 'CAD والهندسة' },
+            { id: 'cad-software',   en: 'CAD Software',             ar: 'برامج CAD' },
+            { id: 'color',          en: 'Color',                    ar: 'الألوان' },
+            { id: 'education',      en: 'Education',                ar: 'التعليم' },
+            { id: 'fashion',        en: 'Fashion',                  ar: 'الأزياء' },
+            { id: 'fonts',          en: 'Fonts',                    ar: 'الخطوط' },
+            { id: 'icons',          en: 'Icons',                    ar: 'الأيقونات' },
+            { id: 'industrial',     en: 'Industrial Design',        ar: 'التصميم الصناعي' },
+            { id: 'inspiration',    en: 'Inspiration',              ar: 'الإلهام' },
+            { id: 'interior',       en: 'Interior Design',          ar: 'التصميم الداخلي' },
+            { id: 'manufacturing',  en: 'Manufacturing',            ar: 'التصنيع' },
+            { id: 'mockups',        en: 'Mockups',                  ar: 'الموك أب' },
+            { id: 'museums',        en: 'Museums / Archives',       ar: 'المتاحف والأرشيفات' },
+            { id: 'reference',      en: 'Other Reference Websites', ar: 'مواقع مرجعية أخرى' },
+            { id: 'photography',    en: 'Photography',              ar: 'التصوير' },
+            { id: 'rendering',      en: 'Rendering',                ar: 'الريندر' },
+            { id: 'research',       en: 'Research',                 ar: 'البحث العلمي' },
+            { id: 'stock',          en: 'Stock Images',             ar: 'صور الستوك' },
+            { id: 'textures',       en: 'Textures / Materials',     ar: 'القوام والخامات' },
+            { id: 'uiux',           en: 'UI / UX',                  ar: 'واجهات وتجربة المستخدم' },
+            { id: 'webdesign',      en: 'Web Design',               ar: 'تصميم الويب' }
+        ];
+
+        // =========================================
+        // 4. RESOURCE DATA
+        //    Existing record constructor — unchanged.
+        // =========================================
+        let _rid = 1;
+        function R(name, url, category, pricing, language, type, popularity, tags, featured, description) {
+            return { id: _rid++, name, url, category, pricing, language: language || 'english', type: type || 'website', popularity: popularity, tags: tags || [], featured: !!featured, description: description || resourceDescriptions[name] || '' };
+        }
+
+        // Restored-entry constructor. Produces the SAME object shape as R().
+        // The supplied restoration list contains only name / URL / category, so the
+        // remaining fields use the project's safest neutral conventions:
+        //   pricing: 'free'   language: 'english'   popularity: 50 (neutral)
+        //   tags: []           featured: false      description: '' (auto-fills
+        //   from resourceDescriptions[name] if a matching key is ever added)
+        //   type: 'tool' for software categories (3D/CAD Software, Rendering,
+        //   AI Design Tools), otherwise 'website'.
+        function RS(name, url, category) {
+            var type = (category === '3d-software' || category === 'cad-software' ||
+                        category === 'rendering' || category === 'ai') ? 'tool' : 'website';
+            return R(name, url, category, 'free', 'english', type, 50, [], false, '');
+        }
+
+        // Dataset: 540 resources, grouped by category, alphabetically sorted
+        // (A→Z, case-insensitive) within each category. Existing 107 records
+        // keep their original metadata; restored records use RS().
+        const resources = [
+
+            // ---- 3D (18) ----
+            RS('3D Warehouse', 'https://3dwarehouse.sketchup.com/', '3d'),
+            RS('3DExport', 'https://3dexport.com/', '3d'),
+            RS('3DOcean', 'https://3docean.net/', '3d'),
+            R('3Dsky', 'https://3dsky.org', '3d', 'freemium', 'english', 'website', 44, ['interior'], false),
+            R('Blend Swap', 'https://www.blendswap.com', '3d', 'free', 'english', 'website', 48, ['blender'], false),
+            RS('BlenderKit', 'https://www.blenderkit.com/', '3d'),
+            R('CGTrader', 'https://www.cgtrader.com', '3d', 'freemium', 'english', 'website', 76, ['marketplace'], false),
+            RS('Chaos Cosmos', 'https://www.chaos.com/cosmos', '3d'),
+            RS('Chocofur', 'https://chocofur.com/', '3d'),
+            RS('Cubebrush', 'https://cubebrush.co/', '3d'),
+            RS('Fab', 'https://www.fab.com/', '3d'),
+            R('Free3D', 'https://free3d.com', '3d', 'free', 'english', 'website', 46, ['models'], false),
+            RS('Poliigon', 'https://www.poliigon.com/', '3d'),
+            R('Poly Haven', 'https://polyhaven.com', '3d', 'free', 'english', 'website', 80, ['hdris', 'textures'], true),
+            R('Quixel Megascans', 'https://quixel.com', '3d', 'freemium', 'english', 'tool', 70, ['scans', 'materials'], false),
+            RS('RenderHub', 'https://www.renderhub.com/', '3d'),
+            R('Sketchfab', 'https://sketchfab.com', '3d', 'freemium', 'english', 'website', 84, ['3d models', 'vr'], false),
+            R('TurboSquid', 'https://www.turbosquid.com', '3d', 'freemium', 'english', 'website', 78, ['3d models', 'marketplace'], true),
+
+            // ---- 3D Software (17) ----
+            RS('3ds Max', 'https://www.autodesk.com/products/3ds-max/overview', '3d-software'),
+            RS('Autodesk Maya', 'https://www.autodesk.com/products/maya/overview', '3d-software'),
+            R('Blender', 'https://www.blender.org', '3d-software', 'free', 'english', 'tool', 90, ['modeling', 'open source'], true, 'Free and open-source 3D creation suite supporting modeling, rigging, animation, and rendering.'),
+            RS('Cinema 4D', 'https://www.maxon.net/en/cinema-4d', '3d-software'),
+            R('DAZ 3D', 'https://www.daz3d.com', '3d-software', 'freemium', 'english', 'website', 60, ['characters'], false),
+            RS('Houdini', 'https://www.sidefx.com/products/houdini/', '3d-software'),
+            R('Human Generator', 'https://humgen3d.com', '3d-software', 'paid', 'english', 'tool', 42, ['blender', 'addon'], false),
+            RS('LightWave 3D', 'https://www.lightwave3d.com/', '3d-software'),
+            R('MakeHuman', 'http://www.makehumancommunity.org', '3d-software', 'free', 'english', 'tool', 50, ['characters', 'open source'], false),
+            R('Mixamo', 'https://www.mixamo.com', '3d-software', 'free', 'english', 'tool', 72, ['animation', 'rigging'], false),
+            RS('Modo', 'https://www.foundry.com/products/modo', '3d-software'),
+            RS('Moi3D', 'https://moi3d.com/', '3d-software'),
+            RS('Nomad Sculpt', 'https://nomadsculpt.com/', '3d-software'),
+            RS('Plasticity', 'https://www.plasticity.xyz/', '3d-software'),
+            RS('SculptGL', 'https://stephaneginier.com/sculptgl/', '3d-software'),
+            RS('Spline', 'https://spline.design/', '3d-software'),
+            RS('ZBrush', 'https://www.maxon.net/en/zbrush', '3d-software'),
+
+            // ---- AI Design Tools (24) ----
+            RS('Adobe Firefly', 'https://firefly.adobe.com/', 'ai'),
+            RS('ChatGPT', 'https://chatgpt.com/', 'ai'),
+            RS('Figma AI', 'https://www.figma.com/ai/', 'ai'),
+            RS('Framer AI', 'https://www.framer.com/ai/', 'ai'),
+            RS('Freepik AI', 'https://www.freepik.com/ai', 'ai'),
+            RS('Galileo AI', 'https://www.usegalileo.ai/', 'ai'),
+            RS('Ideogram', 'https://ideogram.ai/', 'ai'),
+            RS('Kaedim', 'https://www.kaedim3d.com/', 'ai'),
+            RS('Krea', 'https://www.krea.ai/', 'ai'),
+            RS('Leonardo AI', 'https://leonardo.ai/', 'ai'),
+            RS('LookX AI', 'https://www.lookx.ai/', 'ai'),
+            RS('Luma', 'https://lumalabs.ai/', 'ai'),
+            RS('Magnific AI', 'https://magnific.ai/', 'ai'),
+            RS('Meshy', 'https://www.meshy.ai/', 'ai'),
+            RS('Midjourney', 'https://www.midjourney.com/', 'ai'),
+            RS('Pika', 'https://pika.art/', 'ai'),
+            RS('Playground', 'https://playground.com/', 'ai'),
+            RS('Recraft', 'https://www.recraft.ai/', 'ai'),
+            RS('Rodin', 'https://hyper3d.ai/rodin', 'ai'),
+            RS('Runway', 'https://runwayml.com/', 'ai'),
+            RS('Topaz Labs', 'https://www.topazlabs.com/', 'ai'),
+            RS('Tripo', 'https://www.tripo3d.ai/', 'ai'),
+            RS('Uizard', 'https://uizard.io/', 'ai'),
+            RS('Vizcom', 'https://www.vizcom.ai/', 'ai'),
+
+            // ---- Animation / Motion (38) ----
+            RS('11 Second Club', 'https://www.11secondclub.com/', 'motion'),
+            RS('36 Days of Type', 'https://www.36daysoftype.com/', 'motion'),
+            RS('AEJuice', 'https://aejuice.com/', 'motion'),
+            RS('Animation Mentor', 'https://www.animationmentor.com/', 'motion'),
+            RS('Animation Screencaps', 'https://animationscreencaps.com/', 'motion'),
+            RS('Animista', 'https://animista.net/', 'motion'),
+            RS('Art of the Title', 'https://www.artofthetitle.com/', 'motion'),
+            RS('AWN', 'https://www.awn.com/', 'motion'),
+            RS('Cartoon Brew', 'https://www.cartoonbrew.com/', 'motion'),
+            RS('Cavalry', 'https://cavalry.scenegroup.co/', 'motion'),
+            RS('CGWire / Kitsu', 'https://www.cg-wire.com/', 'motion'),
+            RS('Coverr', 'https://coverr.co/', 'motion'),
+            RS('DaVinci Resolve', 'https://www.blackmagicdesign.com/products/davinciresolve', 'motion'),
+            RS('Eyedesyn', 'https://www.eyedesyn.com/', 'motion'),
+            RS('FilmGrab', 'https://film-grab.com/', 'motion'),
+            RS('Frame Set', 'https://frameset.app/', 'motion'),
+            RS('Greyscalegorilla', 'https://greyscalegorilla.com/', 'motion'),
+            RS('iAnimate', 'https://ianimate.net/', 'motion'),
+            R('LottieFiles', 'https://lottiefiles.com', 'motion', 'freemium', 'english', 'tool', 78, ['lottie', 'animation'], false, 'Platform for lightweight Lottie animations for web and apps.'),
+            RS('Mixkit', 'https://mixkit.co/', 'motion'),
+            RS('Moho', 'https://moho.lostmarble.com/', 'motion'),
+            RS('Motion Array', 'https://motionarray.com/', 'motion'),
+            RS('Motion Circles', 'https://motioncircles.com/', 'motion'),
+            RS('Motion Design School', 'https://motiondesign.school/', 'motion'),
+            R('Motionographer', 'https://motionographer.com', 'motion', 'free', 'english', 'website', 66, ['motion design'], false, 'Leading source of inspiration and news for the motion design community.'),
+            RS('No Film School', 'https://nofilmschool.com/', 'motion'),
+            RS('OpenToonz', 'https://opentoonz.github.io/e/', 'motion'),
+            RS('Pencil2D', 'https://www.pencil2d.org/', 'motion'),
+            RS('ProductionCrate', 'https://www.productioncrate.com/', 'motion'),
+            RS('Rive', 'https://rive.app/', 'motion'),
+            R('School of Motion', 'https://www.schoolofmotion.com', 'motion', 'paid', 'english', 'course', 74, ['courses', 'after effects'], true, 'Professional motion design education and courses.'),
+            RS('Screenmusings', 'https://screenmusings.org/', 'motion'),
+            RS('ShotDeck', 'https://shotdeck.com/', 'motion'),
+            RS('Stash', 'https://www.stashmedia.tv/', 'motion'),
+            RS('Synfig', 'https://www.synfig.org/', 'motion'),
+            RS('Toon Boom Harmony', 'https://www.toonboom.com/products/harmony', 'motion'),
+            RS('Video Copilot', 'https://www.videocopilot.net/', 'motion'),
+            RS('Webby Awards Animation', 'https://winners.webbyawards.com/', 'motion'),
+
+            // ---- Architecture (17) ----
+            R('ARCAT', 'https://www.arcat.com', 'architecture', 'free', 'english', 'website', 58, ['building materials', 'cad'], false),
+            R('ArchDaily', 'https://www.archdaily.com', 'architecture', 'free', 'english', 'website', 90, ['projects'], true, 'The world\u2019s most visited architecture website, broadcasting projects worldwide.'),
+            RS('Archinect', 'https://archinect.com/', 'architecture'),
+            RS('Architectural Record', 'https://www.architecturalrecord.com/', 'architecture'),
+            RS('Architecture Today', 'https://architecturetoday.co.uk/', 'architecture'),
+            RS('Architizer', 'https://architizer.com/', 'architecture'),
+            RS('Architonic', 'https://www.architonic.com/', 'architecture'),
+            R('BIMobject', 'https://www.bimobject.com', 'architecture', 'freemium', 'english', 'website', 64, ['bim', 'objects'], false),
+            RS('Bustler', 'https://bustler.net/', 'architecture'),
+            R('Designboom', 'https://www.designboom.com', 'architecture', 'free', 'english', 'website', 82, ['design', 'magazine'], false),
+            R('Design Milk', 'https://design-milk.com', 'architecture', 'free', 'english', 'website', 70, ['interior', 'modern'], false),
+            RS('DETAIL', 'https://www.detail.de/', 'architecture'),
+            R('Dezeen', 'https://www.dezeen.com', 'architecture', 'free', 'english', 'website', 88, ['architecture', 'magazine'], true),
+            RS('Dezeen Awards', 'https://www.dezeen.com/awards/', 'architecture'),
+            RS('Divisare', 'https://divisare.com/', 'architecture'),
+            RS('RIBA', 'https://www.architecture.com/', 'architecture'),
+            RS('World Architecture Community', 'https://worldarchitecture.org/', 'architecture'),
+
+            // ---- Art / Illustration (21) ----
+            R('AdorkaStock', 'https://adorkastock.com', 'art', 'free', 'english', 'website', 54, ['pose photos'], false),
+            RS('Anatomy for Sculptors', 'https://anatomy4sculptors.com/', 'art'),
+            R('Animal Photo Reference', 'https://animalphoto.life', 'art', 'free', 'english', 'website', 46, ['animals'], false),
+            RS('Artfol', 'https://artfol.co/', 'art'),
+            R('ArtStation', 'https://www.artstation.com', 'art', 'freemium', 'english', 'website', 86, ['art', 'games'], false),
+            R('Bodies in Motion', 'https://www.bodiesinmotion.photo', 'art', 'freemium', 'english', 'website', 60, ['anatomy', 'motion'], false),
+            R('Character Design References', 'https://www.characterdesigns.com', 'art', 'free', 'english', 'website', 62, ['characters'], false),
+            R('Croquis Cafe', 'https://www.onairvideo.com/croquis-cafe-english.html', 'art', 'free', 'english', 'website', 52, ['figure drawing'], false),
+            RS('DeviantArt', 'https://www.deviantart.com/', 'art'),
+            RS('Drawabox', 'https://drawabox.com/', 'art'),
+            R('Line of Action', 'https://line-of-action.com', 'art', 'free', 'english', 'tool', 64, ['figure drawing'], false),
+            R('Magic Poser', 'https://magicposer.com', 'art', 'freemium', 'english', 'tool', 54, ['posing'], false),
+            RS('Newgrounds', 'https://www.newgrounds.com/', 'art'),
+            RS('Pixiv', 'https://www.pixiv.net/', 'art'),
+            R('PoseMy.Art', 'https://posemy.art', 'art', 'free', 'english', 'tool', 60, ['3d posing'], false),
+            R('QuickPoses', 'https://quickposes.com', 'art', 'free', 'english', 'tool', 58, ['poses'], false),
+            R('Reference.Pictures', 'https://www.reference.pictures', 'art', 'freemium', 'english', 'website', 50, ['photos'], false),
+            RS('SenshiStock', 'https://www.senshistock.com/', 'art'),
+            R('SketchDaily', 'https://sketchdaily.net', 'art', 'free', 'english', 'website', 56, ['reference'], false),
+            RS('The Pose Archives', 'https://www.theposearchives.com/', 'art'),
+            R('WikiArt', 'https://www.wikiart.org', 'art', 'free', 'english', 'website', 68, ['painting', 'art history'], false, 'Visual encyclopedia of fine art, hosting thousands of high-resolution artworks.'),
+
+            // ---- Audio & SFX (13) ----
+            RS('AudioJungle', 'https://audiojungle.net/', 'audio'),
+            RS('BBC Sound Effects', 'https://sound-effects.bbcrewind.co.uk/', 'audio'),
+            R('Epidemic Sound', 'https://www.epidemicsound.com', 'audio', 'paid', 'english', 'website', 66, ['music', 'licensing'], false, 'Royalty-free music and sound effects library for creators.'),
+            RS('FreeSFX', 'https://www.freesfx.co.uk/', 'audio'),
+            R('Freesound', 'https://freesound.org', 'audio', 'free', 'english', 'website', 72, ['sfx', 'samples'], false, 'Collaborative database of Creative Commons licensed sounds and sound effects.'),
+            RS('Mixkit Sound Effects', 'https://mixkit.co/free-sound-effects/', 'audio'),
+            RS('Pixabay Sound Effects', 'https://pixabay.com/sound-effects/', 'audio'),
+            RS('Pro Sound Effects', 'https://prosoundeffects.com/', 'audio'),
+            RS('Soundly', 'https://soundlyapp.com/', 'audio'),
+            RS('Soundsnap', 'https://www.soundsnap.com/', 'audio'),
+            RS('Splice', 'https://splice.com/', 'audio'),
+            RS('Uppbeat', 'https://uppbeat.io/', 'audio'),
+            R('ZapSplat', 'https://www.zapsplat.com/', 'audio', 'freemium', 'english', 'website', 55, ['sfx', 'library'], false, 'Free sound effects and royalty-free music library.'),
+
+            // ---- CAD / Engineering (12) ----
+            R('3D ContentCentral', 'https://www.3dcontentcentral.com', 'cad-engineering', 'free', 'english', 'website', 50, ['parts', 'assemblies'], false),
+            R('3Dfindit', 'https://www.3dfindit.com', 'cad-engineering', 'free', 'english', 'website', 46, ['cad search'], false),
+            RS('BIMsmith', 'https://www.bimsmith.com/', 'cad-engineering'),
+            RS('CADdetails', 'https://www.caddetails.com/', 'cad-engineering'),
+            RS('CADENAS', 'https://www.cadenas.com/', 'cad-engineering'),
+            RS('Engineering.com', 'https://www.engineering.com/', 'cad-engineering'),
+            R('GrabCAD', 'https://grabcad.com', 'cad-engineering', 'freemium', 'english', 'website', 68, ['cad', 'community'], false),
+            RS('Misumi', 'https://us.misumi-ec.com/', 'cad-engineering'),
+            R('PARTcommunity', 'https://b2b.partcommunity.com', 'cad-engineering', 'free', 'english', 'website', 44, ['catalog'], false),
+            RS('PARTsolutions', 'https://www.partsolutions.com/', 'cad-engineering'),
+            RS('RS Components', 'https://www.rs-online.com/', 'cad-engineering'),
+            R('TraceParts', 'https://www.traceparts.com', 'cad-engineering', 'free', 'english', 'website', 48, ['3d parts'], false),
+
+            // ---- CAD Software (16) ----
+            RS('Alibre', 'https://www.alibre.com/', 'cad-software'),
+            R('Autodesk Fusion', 'https://www.autodesk.com/products/fusion-360/overview', 'cad-software', 'freemium', 'english', 'tool', 80, ['cad', 'cam'], false, 'Integrated cloud CAD/CAM/CAE platform for product development.'),
+            RS('BricsCAD', 'https://www.bricsys.com/', 'cad-software'),
+            RS('CATIA', 'https://www.3ds.com/products/catia', 'cad-software'),
+            RS('Creo', 'https://www.ptc.com/en/products/creo', 'cad-software'),
+            RS('DraftSight', 'https://www.draftsight.com/', 'cad-software'),
+            R('FreeCAD', 'https://www.freecad.org', 'cad-software', 'free', 'english', 'tool', 62, ['open source'], false, 'Open-source parametric 3D CAD modeler for mechanical design.'),
+            RS('LibreCAD', 'https://librecad.org/', 'cad-software'),
+            R('Onshape', 'https://www.onshape.com', 'cad-software', 'freemium', 'english', 'tool', 66, ['cloud cad'], false, 'Full-cloud 3D CAD system for modern product design teams.'),
+            RS('OpenSCAD', 'https://openscad.org/', 'cad-software'),
+            RS('Rhino', 'https://www.rhino3d.com/', 'cad-software'),
+            RS('Shapr3D', 'https://www.shapr3d.com/', 'cad-software'),
+            RS('Siemens NX', 'https://plm.sw.siemens.com/en-US/nx/', 'cad-software'),
+            RS('SolidWorks', 'https://www.solidworks.com/', 'cad-software'),
+            RS('SolveSpace', 'https://solvespace.com/', 'cad-software'),
+            RS('VariCAD', 'https://www.varicad.com/', 'cad-software'),
+
+            // ---- Color (24) ----
+            RS('Accessible Colors', 'https://accessible-colors.com/', 'color'),
+            R('Adobe Color', 'https://color.adobe.com', 'color', 'free', 'english', 'tool', 80, ['palettes', 'contrast'], false, 'Color wheel and palette tool with accessibility checking.'),
+            RS('BrandColors', 'https://brandcolors.net/', 'color'),
+            RS('Colorable', 'https://colorable.jxnblk.com/', 'color'),
+            RS('ColorBox', 'https://colorbox.io/', 'color'),
+            RS('ColorBrewer', 'https://colorbrewer2.org/', 'color'),
+            RS('ColorHexa', 'https://www.colorhexa.com/', 'color'),
+            R('Color Hunt', 'https://colorhunt.co', 'color', 'free', 'english', 'website', 72, ['palettes'], false, 'Curated collection of hand-picked color palettes.'),
+            RS('Color Lisa', 'https://colorlisa.com/', 'color'),
+            RS('ColorSpace', 'https://mycolor.space/', 'color'),
+            RS('CoolHue', 'https://webkul.github.io/coolhue/', 'color'),
+            R('Coolors', 'https://coolors.co', 'color', 'freemium', 'english', 'tool', 85, ['palette generator'], true, 'Fast color palette generator for designers.'),
+            RS('CSS Gradient', 'https://cssgradient.io/', 'color'),
+            RS('Gradient Hunt', 'https://gradienthunt.com/', 'color'),
+            RS('Happy Hues', 'https://www.happyhues.co/', 'color'),
+            RS('Huemint', 'https://huemint.com/', 'color'),
+            RS('Khroma', 'https://www.khroma.co/', 'color'),
+            RS('Leonardo', 'https://leonardocolor.io/', 'color'),
+            RS('Material Palette', 'https://www.materialpalette.com/', 'color'),
+            RS('Mesh Gradients', 'https://meshgradient.com/', 'color'),
+            RS('Palette List', 'https://www.palettelist.com/', 'color'),
+            R('Paletton', 'https://paletton.com', 'color', 'free', 'english', 'tool', 55, ['color wheel'], false, 'Color scheme designer based on color theory.'),
+            RS('UI Colors', 'https://uicolors.app/', 'color'),
+            RS('WebGradients', 'https://webgradients.com/', 'color'),
+
+            // ---- Education (20) ----
+            RS('Adobe Learn', 'https://www.adobe.com/learn', 'education'),
+            RS('Blender Studio', 'https://studio.blender.org/', 'education'),
+            RS('CG Boost', 'https://cgboost.com/', 'education'),
+            RS('CG Cookie', 'https://cgcookie.com/', 'education'),
+            RS('Coursera', 'https://www.coursera.org/', 'education'),
+            RS('Ctrl+Paint', 'https://www.ctrlpaint.com/', 'education'),
+            R('Domestika', 'https://www.domestika.org', 'education', 'paid', 'english', 'course', 74, ['courses', 'creative'], false, 'Online courses for creative professionals across design, illustration, and craft.'),
+            RS('edX', 'https://www.edx.org/', 'education'),
+            RS('Figma Learn', 'https://help.figma.com/hc/en-us/categories/360002051613', 'education'),
+            RS('Interaction Design Foundation', 'https://www.interaction-design.org/', 'education'),
+            RS('Khan Academy', 'https://www.khanacademy.org/', 'education'),
+            RS('LinkedIn Learning', 'https://www.linkedin.com/learning/', 'education'),
+            RS('MIT OpenCourseWare', 'https://ocw.mit.edu/', 'education'),
+            RS('Nielsen Norman Group', 'https://www.nngroup.com/', 'education'),
+            R('Proko', 'https://www.proko.com', 'education', 'freemium', 'english', 'course', 78, ['drawing', 'anatomy'], false),
+            RS('Schoolism', 'https://www.schoolism.com/', 'education'),
+            R('Skillshare', 'https://www.skillshare.com', 'education', 'freemium', 'english', 'course', 70, ['courses'], false, 'Online learning community with thousands of creative classes.'),
+            RS('The Futur', 'https://thefutur.com/', 'education'),
+            RS('Udemy', 'https://www.udemy.com/', 'education'),
+            RS('YouTube Learning', 'https://www.youtube.com/learning', 'education'),
+
+            // ---- Fashion (30) ----
+            RS('CFDA', 'https://cfda.com/', 'fashion'),
+            RS('Dress Forms', 'https://www.dressformsusa.com/', 'fashion'),
+            RS('DressHistory', 'https://dresshistorians.org/', 'fashion'),
+            RS('Fashionary', 'https://fashionary.org/', 'fashion'),
+            RS('Fashion History Timeline', 'https://fashionhistory.fitnyc.edu/', 'fashion'),
+            RS('Fashion Institute of Technology Digital Collections', 'https://www.fitnyc.edu/museum/', 'fashion'),
+            RS('Fashion Network', 'https://ww.fashionnetwork.com/', 'fashion'),
+            RS('Fashionpedia', 'https://fashionary.org/pages/fashionpedia', 'fashion'),
+            RS('Fashion Revolution', 'https://www.fashionrevolution.org/', 'fashion'),
+            RS('Fashion Snoops', 'https://www.fashionsnoops.com/', 'fashion'),
+            RS('FashionUnited', 'https://fashionunited.com/', 'fashion'),
+            RS('Highsnobiety', 'https://www.highsnobiety.com/', 'fashion'),
+            R('Hypebeast', 'https://hypebeast.com', 'fashion', 'free', 'english', 'website', 72, ['streetwear', 'culture'], false, 'Leading platform for contemporary fashion and streetwear culture.'),
+            RS('ISPO', 'https://www.ispo.com/', 'fashion'),
+            RS('Kingpins Show', 'https://kingpinsshow.com/', 'fashion'),
+            RS('London Fashion Week', 'https://londonfashionweek.co.uk/', 'fashion'),
+            RS('Met Museum Costume Institute', 'https://www.metmuseum.org/art/collection/search#!?department=8', 'fashion'),
+            RS('PatternLab', 'https://patternlab.london/', 'fashion'),
+            RS('Pitti Immagine', 'https://www.pittimmagine.com/', 'fashion'),
+            RS('Première Vision', 'https://www.premierevision.com/', 'fashion'),
+            RS('Seamwork', 'https://www.seamwork.com/', 'fashion'),
+            RS('SHOWstudio', 'https://www.showstudio.com/', 'fashion'),
+            RS('Tagwalk', 'https://www.tag-walk.com/', 'fashion'),
+            R('The Business of Fashion', 'https://www.businessoffashion.com/', 'fashion', 'freemium', 'english', 'website', 70, ['fashion', 'industry'], false, 'Authoritative news and analysis for the global fashion industry.'),
+            RS('The Fashion Spot', 'https://forums.thefashionspot.com/', 'fashion'),
+            RS('The Fold Line', 'https://thefoldline.com/', 'fashion'),
+            RS('The Impression', 'https://theimpression.com/', 'fashion'),
+            RS('The Sustainable Fashion Forum', 'https://www.thesustainablefashionforum.com/', 'fashion'),
+            R('Vogue Runway', 'https://www.vogue.com/fashion-shows', 'fashion', 'free', 'english', 'website', 68, ['runway', 'collections'], false, 'Complete runway archive of fashion collections from major designers.'),
+            RS('WGSN', 'https://www.wgsn.com/', 'fashion'),
+
+            // ---- Fonts (27) ----
+            RS('1001 Fonts', 'https://www.1001fonts.com/', 'fonts'),
+            RS('Adobe Fonts', 'https://fonts.adobe.com/', 'fonts'),
+            RS('Collletttivo', 'https://collletttivo.it/', 'fonts'),
+            RS('Commercial Type', 'https://commercialtype.com/', 'fonts'),
+            R('DaFont', 'https://www.dafont.com', 'fonts', 'free', 'english', 'website', 64, ['fonts', 'archive'], false, 'Archive of freely downloadable fonts, organized by category.'),
+            RS('Fontesk', 'https://fontesk.com/', 'fonts'),
+            RS('Font Ninja', 'https://www.font.ninja/', 'fonts'),
+            RS('Fontjoy', 'https://fontjoy.com/', 'fonts'),
+            RS('Fontpair', 'https://www.fontpair.co/', 'fonts'),
+            RS('Fontshare', 'https://www.fontshare.com/', 'fonts'),
+            RS('Fonts In Use', 'https://fontsinuse.com/', 'fonts'),
+            RS('Fontsource', 'https://fontsource.org/', 'fonts'),
+            RS('Fontspring', 'https://www.fontspring.com/', 'fonts'),
+            RS('Font Squirrel', 'https://www.fontsquirrel.com', 'fonts'),
+            R('Font Squirrel', 'https://www.fontsquirrel.com', 'fonts', 'free', 'english', 'website', 68, ['free fonts'], false, 'Handpicked collection of free, commercially-licensed fonts.'),
+            RS('Future Fonts', 'https://www.futurefonts.xyz/', 'fonts'),
+            R('Google Fonts', 'https://fonts.google.com', 'fonts', 'free', 'english', 'website', 95, ['fonts', 'open source'], true, 'Free, open-source font library with hundreds of licensed typefaces for web and print.'),
+            R('Khatt Foundation', 'https://www.khtt.net', 'fonts', 'free', 'arabic', 'website', 40, ['arabic typography', 'research'], false, 'Foundation and network for Arabic typography and design research.'),
+            RS('Klim Type Foundry', 'https://klim.co.nz/', 'fonts'),
+            R('MyFonts', 'https://www.myfonts.com', 'fonts', 'paid', 'english', 'website', 66, ['foundry', 'marketplace'], false, 'Marketplace for professional fonts from independent foundries.'),
+            RS('Pangram Pangram', 'https://pangrampangram.com/', 'fonts'),
+            RS('TypeScale', 'https://typescale.com/', 'fonts'),
+            RS('Typeverything', 'https://typeverything.com/', 'fonts'),
+            RS('Typewolf', 'https://www.typewolf.com/', 'fonts'),
+            RS('Typography.com', 'https://www.typography.com/', 'fonts'),
+            RS('Uncut', 'https://uncut.wtf/', 'fonts'),
+            RS('Velvetyne', 'https://velvetyne.fr/', 'fonts'),
+            RS('WhatTheFont', 'https://www.myfonts.com/pages/whatthefont', 'fonts'),
+
+            // ---- Icons (19) ----
+            RS('Eva Icons', 'https://akveo.github.io/eva-icons/', 'icons'),
+            RS('Feather Icons', 'https://feathericons.com/', 'icons'),
+            RS('Flaticon', 'https://www.flaticon.com/', 'icons'),
+            RS('Font Awesome', 'https://fontawesome.com/', 'icons'),
+            RS('Heroicons', 'https://heroicons.com/', 'icons'),
+            RS('Hugeicons', 'https://hugeicons.com/', 'icons'),
+            RS('Iconify', 'https://icon-sets.iconify.design/', 'icons'),
+            RS('Iconoir', 'https://iconoir.com/', 'icons'),
+            RS('Icons8', 'https://icons8.com/', 'icons'),
+            RS('Iconsax', 'https://iconsax.io/', 'icons'),
+            RS('IconScout', 'https://iconscout.com/', 'icons'),
+            RS('Lucide', 'https://lucide.dev/', 'icons'),
+            RS('Material Symbols', 'https://fonts.google.com/icons', 'icons'),
+            RS('Phosphor Icons', 'https://phosphoricons.com/', 'icons'),
+            RS('Remix Icon', 'https://remixicon.com/', 'icons'),
+            RS('Simple Icons', 'https://simpleicons.org/', 'icons'),
+            RS('Streamline', 'https://www.streamlinehq.com/', 'icons'),
+            RS('Tabler Icons', 'https://tabler.io/icons', 'icons'),
+            RS('The Noun Project', 'https://thenounproject.com/', 'icons'),
+
+            // ---- Industrial Design (16) ----
+            RS("A' Design Award", 'https://competition.adesignaward.com/', 'industrial'),
+            RS('BraunPrize', 'https://www.braunprize.com/', 'industrial'),
+            R('Core77', 'https://www.core77.com', 'industrial', 'free', 'english', 'website', 78, ['industrial design', 'articles'], false),
+            RS('Core77 Design Awards', 'https://designawards.core77.com/', 'industrial'),
+            RS('Design Council', 'https://www.designcouncil.org.uk/', 'industrial'),
+            RS('Design Engineering', 'https://design-engineering.com/', 'industrial'),
+            R('Dieline', 'https://thedieline.com', 'industrial', 'free', 'english', 'website', 72, ['packaging'], false),
+            R('frog', 'https://www.frog.co', 'industrial', 'free', 'english', 'website', 74, ['consultancy'], false),
+            RS('Good Design Awards', 'https://chi-athenaeum.org/good-design.html', 'industrial'),
+            RS('IDEA Awards', 'https://www.idsa.org/idea', 'industrial'),
+            R('IDEO', 'https://www.ideo.com', 'industrial', 'free', 'english', 'website', 76, ['consultancy', 'innovation'], false),
+            RS('iF Design', 'https://ifdesign.com/', 'industrial'),
+            RS('Industrial Designers Society of America', 'https://www.idsa.org/', 'industrial'),
+            R('Packaging of the World', 'https://www.packagingoftheworld.com', 'industrial', 'free', 'english', 'website', 58, ['packaging'], false),
+            RS('Product Design Database', 'https://www.productdesign.tips/', 'industrial'),
+            R('Yanko Design', 'https://www.yankodesign.com', 'industrial', 'free', 'english', 'website', 80, ['product design', 'magazine'], true),
+
+            // ---- Inspiration (26) ----
+            RS('Abduzeedo', 'https://abduzeedo.com/', 'inspiration'),
+            R('Are.na', 'https://www.are.na', 'inspiration', 'freemium', 'english', 'website', 66, ['ideas', 'research'], false),
+            R('Behance', 'https://www.behance.net', 'inspiration', 'free', 'english', 'website', 93, ['portfolio', 'showcase'], true),
+            R('BP&O', 'https://bpando.org', 'inspiration', 'free', 'english', 'website', 62, ['branding', 'packaging'], false),
+            R('Brand New', 'https://www.underconsideration.com/brandnew', 'inspiration', 'free', 'english', 'website', 64, ['reviews'], false),
+            R('Cargo Collective', 'https://cargo.site', 'inspiration', 'freemium', 'english', 'website', 56, ['portfolio', 'builder'], false),
+            RS('Coroflot', 'https://www.coroflot.com/', 'inspiration'),
+            RS('Creative Boom', 'https://www.creativeboom.com/', 'inspiration'),
+            R('Designspiration', 'https://designspiration.com', 'inspiration', 'free', 'english', 'website', 60, ['search', 'typography'], false),
+            RS('DesignWanted', 'https://designwanted.com/', 'inspiration'),
+            RS('Design You Trust', 'https://designyoutrust.com/', 'inspiration'),
+            R('Httpster', 'https://httpster.net', 'inspiration', 'free', 'english', 'website', 45, ['curated'], false),
+            R('Identity Designed', 'https://identitydesigned.com', 'inspiration', 'free', 'english', 'website', 66, ['identity', 'showcase'], false),
+            RS('Intramuros', 'https://intramuros.fr/', 'inspiration'),
+            R('Land-book', 'https://land-book.com', 'inspiration', 'free', 'english', 'website', 62, ['landing pages'], false),
+            RS('LeManoosh', 'https://lemanoosh.com/', 'inspiration'),
+            RS('Materio', 'https://www.materio.com/', 'inspiration'),
+            R('Minimal Gallery', 'https://minimal.gallery', 'inspiration', 'free', 'english', 'website', 48, ['minimalism'], false),
+            R('Muzli', 'https://muz.li', 'inspiration', 'freemium', 'english', 'website', 82, ['extension', 'news'], false),
+            R('One Page Love', 'https://onepagelove.com', 'inspiration', 'freemium', 'english', 'website', 70, ['landing', 'templates'], false),
+            R('Pinterest', 'https://www.pinterest.com', 'inspiration', 'free', 'english', 'website', 95, ['mood boards', 'visual search'], true),
+            RS('Red Dot', 'https://www.red-dot.org/', 'inspiration'),
+            R('SiteInspire', 'https://www.siteinspire.com', 'inspiration', 'free', 'english', 'website', 66, ['gallery', 'web design'], false),
+            R('The Brand Identity', 'https://www.the-brandidentity.com', 'inspiration', 'free', 'english', 'website', 68, ['identity', 'packaging'], false),
+            R('The Designest', 'https://thedesignest.net', 'inspiration', 'free', 'english', 'website', 60, ['graphic design'], false),
+            RS('Wired', 'https://www.wired.com/', 'inspiration'),
+
+            // ---- Interior Design (5) ----
+            RS('Apartment Therapy', 'https://www.apartmenttherapy.com/', 'interior'),
+            RS('Design Anthology', 'https://design-anthology.com/', 'interior'),
+            RS('Interior Define', 'https://www.interiordefine.com/', 'interior'),
+            RS('Interior Design Magazine', 'https://interiordesign.net/', 'interior'),
+            RS('My Scandinavian Home', 'https://myscandinavianhome.com/', 'interior'),
+
+            // ---- Manufacturing (12) ----
+            R('Fictiv', 'https://www.fictiv.com', 'manufacturing', 'freemium', 'english', 'website', 50, ['manufacturing'], false),
+            R('Hubs', 'https://www.hubs.com', 'manufacturing', 'freemium', 'english', 'website', 58, ['prototyping'], false),
+            RS('JLCPCB', 'https://jlcpcb.com/', 'manufacturing'),
+            R('McMaster-Carr', 'https://www.mcmaster.com', 'manufacturing', 'free', 'english', 'website', 72, ['hardware', 'parts'], false),
+            R('PCBWay', 'https://www.pcbway.com', 'manufacturing', 'freemium', 'english', 'website', 52, ['pcb', 'electronics'], false),
+            RS('Ponoko', 'https://www.ponoko.com/', 'manufacturing'),
+            RS('Protocase', 'https://www.protocase.com/', 'manufacturing'),
+            R('Protolabs', 'https://www.protolabs.com', 'manufacturing', 'free', 'english', 'website', 55, ['rapid prototyping'], false),
+            RS('Sculpteo', 'https://www.sculpteo.com/', 'manufacturing'),
+            RS('SendCutSend', 'https://sendcutsend.com/', 'manufacturing'),
+            RS('Shapeways', 'https://www.shapeways.com/', 'manufacturing'),
+            R('Xometry', 'https://www.xometry.com', 'manufacturing', 'freemium', 'english', 'website', 60, ['cnc', '3d printing'], false),
+
+            // ---- Mockups (15) ----
+            RS('Anthony Boyd Graphics', 'https://www.anthonyboyd.graphics/', 'mockups'),
+            RS('Artboard Studio', 'https://artboard.studio/', 'mockups'),
+            RS('Freepik', 'https://www.freepik.com/', 'mockups'),
+            R('GraphicBurger', 'https://graphicburger.com', 'mockups', 'free', 'english', 'website', 55, ['mockups', 'psd'], false, 'Free PSD mockups and design resources.'),
+            R('LS Graphics', 'https://ls.graphics', 'mockups', 'freemium', 'english', 'website', 60, ['mockups', 'templates'], false, 'Premium and free device mockups and templates.'),
+            RS('Mediamodifier', 'https://mediamodifier.com/', 'mockups'),
+            RS('MockupTree', 'https://mockuptree.com/', 'mockups'),
+            R('Mockup World', 'https://www.mockupworld.co', 'mockups', 'free', 'english', 'website', 66, ['mockups'], false, 'Curated directory of free photorealistic mockups.'),
+            RS('Mockuuups Studio', 'https://mockuuups.studio/', 'mockups'),
+            RS('Mr.Mockup', 'https://mrmockup.com/', 'mockups'),
+            RS('Pixeden', 'https://www.pixeden.com/', 'mockups'),
+            RS('Placeit', 'https://placeit.net/', 'mockups'),
+            RS('Rotato', 'https://rotato.app/', 'mockups'),
+            RS('Smartmockups', 'https://smartmockups.com/', 'mockups'),
+            RS('Unblast', 'https://unblast.com/', 'mockups'),
+
+            // ---- Museums / Archives (23) ----
+            RS('Albertina Museum', 'https://www.albertina.at/', 'museums'),
+            RS('Art Institute of Chicago', 'https://www.artic.edu/', 'museums'),
+            RS('British Library', 'https://www.bl.uk/', 'museums'),
+            RS('British Museum', 'https://www.britishmuseum.org/', 'museums'),
+            R('Cooper Hewitt', 'https://www.cooperhewitt.org', 'museums', 'free', 'english', 'website', 65, ['museum', 'collection'], false),
+            RS('Digital Public Library of America', 'https://dp.la/', 'museums'),
+            RS('Getty', 'https://www.getty.edu/', 'museums'),
+            RS('Google Arts & Culture', 'https://artsandculture.google.com/', 'museums'),
+            RS('Guggenheim', 'https://www.guggenheim.org/', 'museums'),
+            RS('Harvard Art Museums', 'https://harvardartmuseums.org/', 'museums'),
+            RS('LACMA', 'https://www.lacma.org/', 'museums'),
+            RS('Library of Congress', 'https://www.loc.gov/', 'museums'),
+            RS('Louvre', 'https://www.louvre.fr/en', 'museums'),
+            RS('MoMA', 'https://www.moma.org/', 'museums'),
+            RS('National Gallery', 'https://www.nationalgallery.org.uk/', 'museums'),
+            RS('National Museum of Korea', 'https://www.museum.go.kr/', 'museums'),
+            RS('Philadelphia Museum of Art', 'https://www.philamuseum.org/', 'museums'),
+            RS('Rijksmuseum', 'https://www.rijksmuseum.nl/', 'museums'),
+            RS('Smithsonian', 'https://www.si.edu/', 'museums'),
+            R('Smithsonian Design Museum', 'https://design.si.edu', 'museums', 'free', 'english', 'website', 60, ['museum'], false),
+            RS('The Metropolitan Museum of Art', 'https://www.metmuseum.org/', 'museums'),
+            R('V&A', 'https://www.vam.ac.uk/', 'museums', 'free', 'english', 'website', 62, ['museum', 'art'], false, 'The world\u2019s leading museum of art, design, and performance.'),
+            RS('Wellcome Collection', 'https://wellcomecollection.org/', 'museums'),
+
+            // ---- Other Reference Websites (42) ----
+            RS('ALBERTINA Sammlungen Online', 'https://sammlungonline.albertina.at/', 'reference'),
+            RS('Animal Photo Art References', 'https://www.animal-photo-references.com/', 'reference'),
+            RS('Animal Themes', 'https://animalthemes.org/', 'reference'),
+            RS('Apivault', 'https://apivault.dev/', 'reference'),
+            R('Arabic Type Archive', 'https://arabictypearchive.com', 'reference', 'free', 'arabic', 'website', 40, ['arabic', 'calligraphy'], false, 'Digital archive documenting contemporary and classical Arabic lettering.'),
+            RS('ArtStation - All Channels', 'https://www.artstation.com/', 'reference'),
+            RS('BOOTH', 'https://booth.pm/', 'reference'),
+            RS('Canon Creative Park', 'https://creativepark.canon/', 'reference'),
+            RS('Character Posing', 'https://www.characterposing.com/', 'reference'),
+            RS('Cleanup.pictures', 'https://cleanup.pictures/', 'reference'),
+            RS('Craft', 'https://www.craft.do/', 'reference'),
+            RS('Dimensions', 'https://www.dimensions.com/', 'reference'),
+            RS('Excalidraw', 'https://excalidraw.com/', 'reference'),
+            RS('Eyecandy', 'https://eycndy.com/', 'reference'),
+            RS('FILMGRAB', 'https://film-grab.com/', 'reference'),
+            RS('Frameset', 'https://frameset.app/', 'reference'),
+            RS('Free Depth Map Generator', 'https://www.lospec.com/', 'reference'),
+            RS('Haikei', 'https://haikei.app/', 'reference'),
+            R('Internet Archive', 'https://archive.org', 'reference', 'free', 'english', 'website', 80, ['archive', 'books'], true, 'Non-profit digital library offering free access to books, media, and websites.'),
+            RS('noclip', 'https://noclip.website/', 'reference'),
+            RS('Omni Calculator', 'https://www.omnicalculator.com/', 'reference'),
+            RS('Open Access - The Metropolitan Museum of Art', 'https://www.metmuseum.org/art/collection/search#!?showOnly=openAccess', 'reference'),
+            RS('Papercraft Plaza', 'https://www.papercraftplaza.com/', 'reference'),
+            RS('Papercraft Templates', 'https://www.papercraftsquare.com/', 'reference'),
+            RS('PAPERMAU', 'https://papermau.blogspot.com/', 'reference'),
+            RS('PersianGFX', 'https://persianblog.ir/', 'reference'),
+            RS('Photopea', 'https://www.photopea.com/', 'reference'),
+            RS('Pixilart', 'https://www.pixilart.com/', 'reference'),
+            RS('Reference Angle', 'https://referenceangle.com/', 'reference'),
+            RS('Remove.bg', 'https://www.remove.bg/', 'reference'),
+            RS('Same Energy', 'https://same.energy/', 'reference'),
+            RS('Settei Dreams', 'https://setteidreams.net/', 'reference'),
+            RS('Shading Reference', 'https://www.shadingreference.com/', 'reference'),
+            RS('Squoosh', 'https://squoosh.app/', 'reference'),
+            RS('SVG Repo', 'https://www.svgrepo.com/', 'reference'),
+            R('Symbols', 'https://www.symbols.com', 'reference', 'free', 'english', 'website', 45, ['symbols', 'signs'], false, 'Online encyclopedia of graphic symbols and their meanings.'),
+            RS('The Models Resource', 'https://www.models-resource.com/', 'reference'),
+            RS('TinyWow', 'https://tinywow.com/', 'reference'),
+            RS('Tooooools.app', 'https://www.tooooolls.com/', 'reference'),
+            RS('Top Artwork', 'https://www.topartwork.com/', 'reference'),
+            R('Wikimedia Commons', 'https://commons.wikimedia.org', 'reference', 'free', 'english', 'website', 75, ['media', 'public domain'], false, 'Repository of free-use images, sounds, and other media.'),
+            RS('Wolfram Alpha', 'https://www.wolframalpha.com/', 'reference'),
+
+            // ---- Photography (9) ----
+            RS('500px', 'https://500px.com/', 'photography'),
+            RS('Flickr', 'https://www.flickr.com/', 'photography'),
+            RS('LensCulture', 'https://www.lensculture.com/', 'photography'),
+            RS('Magnum Photos', 'https://www.magnumphotos.com/', 'photography'),
+            RS('National Geographic Photography', 'https://www.nationalgeographic.com/photography/', 'photography'),
+            R('Pexels', 'https://www.pexels.com', 'photography', 'free', 'english', 'website', 90, ['photos', 'videos'], false),
+            RS('PhotoVogue', 'https://www.vogue.com/photovogue', 'photography'),
+            R('Pixabay', 'https://pixabay.com', 'photography', 'free', 'english', 'website', 85, ['photos', 'illustrations'], false, 'Free stock photos, illustrations, vectors, and videos.'),
+            R('Unsplash', 'https://unsplash.com', 'photography', 'free', 'english', 'website', 93, ['photos', 'stock'], true),
+
+            // ---- Rendering (12) ----
+            RS('Artlantis', 'https://www.artlantis.com/', 'rendering'),
+            RS('Corona Renderer', 'https://www.chaos.com/corona', 'rendering'),
+            RS('D5 Render', 'https://www.d5render.com/', 'rendering'),
+            RS('Enscape', 'https://www.enscape3d.com/', 'rendering'),
+            RS('Indigo Renderer', 'https://www.indigorenderer.com/', 'rendering'),
+            RS('KeyShot', 'https://www.keyshot.com/', 'rendering'),
+            RS('Lumion', 'https://lumion.com/', 'rendering'),
+            RS('Maxwell Render', 'https://www.maxwellrender.com/', 'rendering'),
+            RS('Octane', 'https://home.otoy.com/render/octane-render/', 'rendering'),
+            RS('Redshift', 'https://www.maxon.net/en/redshift', 'rendering'),
+            RS('Twinmotion', 'https://www.twinmotion.com/', 'rendering'),
+            RS('V-Ray', 'https://www.chaos.com/vray', 'rendering'),
+
+            // ---- Research (19) ----
+            RS('arXiv', 'https://arxiv.org/', 'research'),
+            RS('BASE', 'https://www.base-search.net/', 'research'),
+            RS('Connected Papers', 'https://www.connectedpapers.com/', 'research'),
+            RS('CORE', 'https://core.ac.uk/', 'research'),
+            RS('DOAJ', 'https://doaj.org/', 'research'),
+            RS('ERIC', 'https://eric.ed.gov/', 'research'),
+            RS('Europeana', 'https://www.europeana.eu/', 'research'),
+            RS('Google Books', 'https://books.google.com/', 'research'),
+            RS('Google Scholar', 'https://scholar.google.com/', 'research'),
+            RS('JSTOR', 'https://www.jstor.org/', 'research'),
+            RS('Litmaps', 'https://www.litmaps.com/', 'research'),
+            RS('OpenAlex', 'https://openalex.org/', 'research'),
+            RS('Open Library', 'https://openlibrary.org/', 'research'),
+            RS('Project Gutenberg', 'https://www.gutenberg.org/', 'research'),
+            RS('PubMed', 'https://pubmed.ncbi.nlm.nih.gov/', 'research'),
+            RS('ResearchGate', 'https://www.researchgate.net/', 'research'),
+            RS('Semantic Scholar', 'https://www.semanticscholar.org/', 'research'),
+            RS('Unpaywall', 'https://unpaywall.org/', 'research'),
+            RS('WorldCat', 'https://www.worldcat.org/', 'research'),
+
+            // ---- Stock Images (12) ----
+            RS('Burst', 'https://burst.shopify.com/', 'stock'),
+            RS('Flickr Commons', 'https://commons.flickr.org/', 'stock'),
+            RS('Foodiesfeed', 'https://www.foodiesfeed.com/', 'stock'),
+            RS('ISO Republic', 'https://isorepublic.com/', 'stock'),
+            RS('Kaboompics', 'https://kaboompics.com/', 'stock'),
+            RS('Life of Pix', 'https://www.lifeofpix.com/', 'stock'),
+            RS('Negative Space', 'https://negativespace.co/', 'stock'),
+            RS('Picjumbo', 'https://picjumbo.com/', 'stock'),
+            RS('Picography', 'https://picography.co/', 'stock'),
+            RS('Rawpixel', 'https://www.rawpixel.com/', 'stock'),
+            RS('Reshot', 'https://www.reshot.com/', 'stock'),
+            RS('StockSnap', 'https://stocksnap.io/', 'stock'),
+
+            // ---- Textures / Materials (20) ----
+            RS('3DTextures.me', 'https://3dtextures.me/', 'textures'),
+            RS('3DTotal', 'https://3dtotal.com/', 'textures'),
+            RS('AmbientCG', 'https://ambientcg.com/', 'textures'),
+            RS('AZoM', 'https://www.azom.com/', 'textures'),
+            RS('CGBookcase', 'https://www.cgbookcase.com/', 'textures'),
+            RS('FreePBR', 'https://freepbr.com/', 'textures'),
+            RS('Goodfellow', 'https://www.goodfellow.com/', 'textures'),
+            RS('LotPixel', 'https://www.lotpixel.com/', 'textures'),
+            RS('MakeItFrom', 'https://www.makeitfrom.com/', 'textures'),
+            RS('Material ConneXion', 'https://materialconnexion.com/', 'textures'),
+            RS('Material District', 'https://materialdistrict.com/', 'textures'),
+            RS('Material Maker', 'https://rodzilla.itch.io/material-maker', 'textures'),
+            RS('MatWeb', 'https://www.matweb.com/', 'textures'),
+            RS('ShareTextures', 'https://www.sharetextures.com/', 'textures'),
+            RS('SketchUp Texture Club', 'https://www.sketchuptextureclub.com/', 'textures'),
+            RS('Substance 3D Assets', 'https://www.adobe.com/products/substance3d/assets.html', 'textures'),
+            RS('TextureCan', 'https://www.texturecan.com/', 'textures'),
+            RS('Textures.com', 'https://www.textures.com/', 'textures'),
+            RS('The Engineering Toolbox', 'https://www.engineeringtoolbox.com/', 'textures'),
+            RS('WithPoly', 'https://withpoly.com/', 'textures'),
+
+            // ---- UI / UX (26) ----
+            RS('Appshots', 'https://appshots.design/', 'uiux'),
+            R('Awwwards', 'https://www.awwwards.com', 'uiux', 'free', 'english', 'website', 92, ['web design', 'awards'], true),
+            RS('Collect UI', 'https://collectui.com/', 'uiux'),
+            RS('DesignVault', 'https://designvault.io/', 'uiux'),
+            R('Dribbble', 'https://dribbble.com', 'uiux', 'freemium', 'english', 'website', 88, ['shots', 'ui', 'community'], false),
+            RS('Figma', 'https://www.figma.com/', 'uiux'),
+            RS('Figma Community', 'https://www.figma.com/community', 'uiux'),
+            RS('Framer', 'https://www.framer.com/', 'uiux'),
+            R('Godly', 'https://godly.website', 'uiux', 'free', 'english', 'website', 74, ['web design', 'gallery'], false),
+            RS('Human Interface Guidelines', 'https://developer.apple.com/design/human-interface-guidelines/', 'uiux'),
+            RS('Lapa Ninja', 'https://www.lapa.ninja/', 'uiux'),
+            RS('Laws of UX', 'https://lawsofux.com/', 'uiux'),
+            RS('Material Design', 'https://m3.material.io/', 'uiux'),
+            R('Mobbin', 'https://mobbin.com', 'uiux', 'freemium', 'english', 'website', 76, ['ui library', 'patterns'], false, 'Mobile and web UI pattern library for researching real product design flows.'),
+            RS('Nicelydone', 'https://nicelydone.club/', 'uiux'),
+            RS('Page Flows', 'https://pageflows.com/', 'uiux'),
+            RS('Penpot', 'https://penpot.app/', 'uiux'),
+            R('Product Hunt', 'https://www.producthunt.com', 'uiux', 'free', 'english', 'website', 85, ['apps', 'tech'], false),
+            RS('Pttrns', 'https://pttrns.com/', 'uiux'),
+            RS('Refero', 'https://refero.design/', 'uiux'),
+            RS('Screenlane', 'https://screenlane.com/', 'uiux'),
+            RS('UI Garage', 'https://uigarage.net/', 'uiux'),
+            RS('UI Jar', 'https://uijar.com/', 'uiux'),
+            RS('UI Sources', 'https://www.uisources.com/', 'uiux'),
+            RS('UXArchive', 'https://uxarchive.com/', 'uiux'),
+            RS('UX Collective', 'https://uxdesign.cc/', 'uiux'),
+
+            // ---- Web Design (7) ----
+            RS('Commerce Cream', 'https://commercecream.com/', 'webdesign'),
+            RS('CSS Design Awards', 'https://www.cssdesignawards.com/', 'webdesign'),
+            RS('CSS Nectar', 'https://cssnectar.com/', 'webdesign'),
+            RS('CSS Winner', 'https://www.csswinner.com/', 'webdesign'),
+            RS('SaaSFrame', 'https://www.saasframe.io/', 'webdesign'),
+            RS('Web Design Inspiration', 'https://www.webdesign-inspiration.com/', 'webdesign'),
+            RS('Webflow Showcase', 'https://webflow.com/discover/popular', 'webdesign')
+        ];
+
+        // BOOKS — unchanged (not part of this restoration task)
+        let _bid = 1;
+        function B(title, author, year, pages, category, accessType, url, language, tags, description, featured) {
+            return { id: _bid++, title, author, year, pages, category, accessType, url, language, tags, description, featured: !!featured, pricing: 'free' };
+        }
+
+        const books = [
+            B('The Design of Everyday Things', 'Don Norman', 2013, 368, 'industrial', 'open_library', 'https://openlibrary.org/works/OL4258622W', 'english', ['usability', 'design thinking'], 'A classic guide to human-centered design and the psychology of everyday objects.', true),
+            B('Don\u2019t Make Me Think', 'Steve Krug', 2014, 216, 'uiux', 'open_library', 'https://openlibrary.org/works/OL576941W', 'english', ['usability', 'web'], 'A common-sense approach to web usability.', false),
+            B('Thinking with Type', 'Ellen Lupton', 2010, 208, 'fonts', 'internet_archive', 'https://archive.org/details/thinkingwithtype00lupt', 'english', ['typography', 'graphic design'], 'A critical guide for designers, writers, editors, and students on typography.', false),
+            B('Grid Systems in Graphic Design', 'Josef M\u00fcller-Brockmann', 1996, 176, 'fonts', 'other_url', 'https://www.niggli.com/en/books/grid-systems-in-graphic-design', 'english', ['grids', 'layout'], 'The definitive work on grid systems in graphic design.', false),
+            B('About Face: The Essentials of Interaction Design', 'Alan Cooper', 2014, 720, 'uiux', 'other_url', 'https://www.wiley.com/en-us/About+Face%3A+The+Essentials+of+Interaction+Design%2C+4th+Edition-p-9781118766576', 'english', ['interaction design', 'ux'], 'A comprehensive guide to interaction design fundamentals.', false),
+            B('A Pattern Language', 'Christopher Alexander', 1977, 1216, 'architecture', 'mega', 'https://mega.nz', 'english', ['architecture', 'patterns'], 'A timeless guide to building towns, buildings, and human life.', false)
+        ];
+
+        // =========================================
+        // 5. STATE
+        // =========================================
+        const state = {
+            page: 'home',
+            lang: 'en',
+            activeFilters: { category: new Set(), pricing: new Set(), language: new Set() },
+            pendingMobileFilters: null,
+            searchQuery: '',
+            sortBy: 'relevance',
+            visibleCount: 12,
+            saved: new Set(),
+            detailId: null,
+            detailType: null,
+            editingId: null,
+            adminTab: 'resources'
+        };
+
+        // =========================================
+        // 6. HELPERS
+        // =========================================
+        function t(key, params) {
+            const dict = i18n[state.lang] || i18n.en;
+            let s = dict[key] !== undefined ? dict[key] : (i18n.en[key] !== undefined ? i18n.en[key] : key);
+            if (params) for (const k in params) s = s.replace('{' + k + '}', params[k]);
+            return s;
+        }
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function catLabel(id) { const c = CATEGORIES.find(c => c.id === id); return c ? c[state.lang] : id; }
+        function langLabel(v) { return v === 'arabic' ? (state.lang === 'ar' ? 'العربية' : 'Arabic') : (state.lang === 'ar' ? 'الإنجليزية' : 'English'); }
+        function countResources(key, value) { return resources.filter(r => r[key] === value).length; }
+        function getActiveFilterCount() { return state.activeFilters.category.size + state.activeFilters.pricing.size + state.activeFilters.language.size; }
+        function getFilterLabel(type, value) {
+            if (type === 'category') return catLabel(value);
+            if (type === 'pricing') return t(value);
+            if (type === 'language') return langLabel(value);
+            return value;
+        }
+        function isSaved(key) { return state.saved.has(key); }
+        function bookmarkIcon(filled) {
+            return '<svg width="16" height="16" viewBox="0 0 24 24" fill="' + (filled ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>';
+        }
+        function hay(o) { return ((o.name || o.title || '') + ' ' + (o.author || '') + ' ' + (o.description || '') + ' ' + (o.tags || []).join(' ') + ' ' + catLabel(o.category) + ' ' + (o.type || '')).toLowerCase(); }
+
+        // =========================================
+        // 7. FILTERING LOGIC (unchanged behavior)
+        // =========================================
+        function getFilteredResources() {
+            let list = resources.filter(r => {
+                const f = state.activeFilters;
+                if (f.category.size && !f.category.has(r.category)) return false;
+                if (f.pricing.size && !f.pricing.has(r.pricing)) return false;
+                if (f.language.size && !f.language.has(r.language)) return false;
+                if (state.searchQuery) {
+                    const q = state.searchQuery.toLowerCase();
+                    if (!hay(r).includes(q)) return false;
+                }
+                return true;
+            });
+            if (state.sortBy === 'popularity') list = list.slice().sort((a, b) => b.popularity - a.popularity);
+            else if (state.sortBy === 'alpha') list = list.slice().sort((a, b) => a.name.localeCompare(b.name));
+            else list = list.slice().sort((a, b) => ((b.featured ? 1 : 0) - (a.featured ? 1 : 0)) || (b.popularity - a.popularity));
+            return list;
+        }
+
+        function toggleFilter(type, value) {
+            const set = state.activeFilters[type];
+            if (set.has(value)) set.delete(value); else set.add(value);
+            state.visibleCount = 12;
+            renderWithFilterTransition(); // ← approved filter UX entry point
+        }
+
+        function clearAllFilters() {
+            Object.values(state.activeFilters).forEach(s => s.clear());
+            state.visibleCount = 12;
+            renderWithFilterTransition();
+        }
+
+        function loadMore() { state.visibleCount += 12; render(); }
+        function handleSort(v) { state.sortBy = v; render(); }
+
+        function handleExploreSearch(v) {
+            state.searchQuery = v;
+            state.visibleCount = 12;
+            render();
+            const input = document.querySelector('.explore-search-input');
+            if (input) { input.focus(); try { input.setSelectionRange(v.length, v.length); } catch (e) {} }
+        }
+
+        function exploreCategory(cat) {
+            state.activeFilters.category = new Set([cat]);
+            state.activeFilters.pricing.clear();
+            state.activeFilters.language.clear();
+            state.searchQuery = '';
+            state.visibleCount = 12;
+            navigate('explore');
+        }
+
+        // =========================================
+        // 8. MOBILE FILTER DRAWER (structure unchanged)
+        // =========================================
+        function getFilterGroups() {
+            return [
+                { type: 'category', labelKey: 'filter_category', options: CATEGORIES.map(c => ({ value: c.id, label: c[state.lang], count: countResources('category', c.id) })) },
+                { type: 'pricing', labelKey: 'filter_pricing', options: ['free', 'freemium', 'paid'].map(v => ({ value: v, label: t(v), count: countResources('pricing', v) })) },
+                { type: 'language', labelKey: 'filter_language', options: [{ value: 'english', label: langLabel('english') }, { value: 'arabic', label: langLabel('arabic') }].map(o => ({ value: o.value, label: o.label, count: countResources('language', o.value) })) }
+            ];
+        }
+
+        function openMobileFilters() {
+            state.pendingMobileFilters = {
+                category: new Set(state.activeFilters.category),
+                pricing: new Set(state.activeFilters.pricing),
+                language: new Set(state.activeFilters.language)
+            };
+            document.getElementById('mobile-filter-body').innerHTML = renderMobileFilterBody();
+            document.getElementById('mobile-filter-overlay').classList.add('active');
+        }
+        function closeMobileFilters() { document.getElementById('mobile-filter-overlay').classList.remove('active'); }
+        function toggleMobileFilter(type, value) {
+            if (!state.pendingMobileFilters) return;
+            const s = state.pendingMobileFilters[type];
+            if (s.has(value)) s.delete(value); else s.add(value);
+        }
+        function clearMobilePending() {
+            if (!state.pendingMobileFilters) return;
+            Object.values(state.pendingMobileFilters).forEach(s => s.clear());
+            document.getElementById('mobile-filter-body').innerHTML = renderMobileFilterBody();
+        }
+        function applyMobileFilters() {
+            if (state.pendingMobileFilters) {
+                ['category', 'pricing', 'language'].forEach(k => {
+                    state.activeFilters[k].clear();
+                    state.pendingMobileFilters[k].forEach(v => state.activeFilters[k].add(v));
+                });
+            }
+            state.visibleCount = 12;
+            closeMobileFilters();
+            renderWithFilterTransition();
+        }
+        function renderMobileFilterBody() {
+            const p = state.pendingMobileFilters;
+            return getFilterGroups().map(g => `
+                <div class="filter-group">
+                    <div class="filter-title">${t(g.labelKey)}</div>
+                    <div class="filter-list">
+                        ${g.options.map(o => `
+                            <label class="filter-item">
+                                <input type="checkbox" ${p[g.type].has(o.value) ? 'checked' : ''} onclick="toggleMobileFilter('${g.type}','${o.value}')">
+                                <span>${o.label}</span>
+                                <span class="count">${o.count}</span>
+                            </label>`).join('')}
+                    </div>
+                </div>`).join('');
+        }
+
+        // =========================================
+        // 9. NAVIGATION, THEME & LANGUAGE
+        // =========================================
+        function navigate(page) {
+            state.page = page;
+            if (page !== 'detail') { state.detailId = null; state.detailType = null; }
+            if (page !== 'submit') state.editingId = null;
+            window.scrollTo(0, 0);
+            render();
+        }
+        function updateNavActive() {
+            let page = state.page;
+            if (page === 'detail' || page === 'submit') page = 'explore';
+            document.querySelectorAll('.nav-links a').forEach(a => {
+                const oc = a.getAttribute('onclick') || '';
+                a.classList.toggle('active', oc.indexOf("'" + page + "'") !== -1);
+            });
+        }
+        const ICON_MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        const ICON_SUN = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        function toggleTheme() {
+            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            document.getElementById('icon-moon').innerHTML = next === 'dark' ? ICON_SUN : ICON_MOON;
+        }
+        function toggleLang() {
+            state.lang = state.lang === 'en' ? 'ar' : 'en';
+            document.documentElement.lang = state.lang;
+            document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('lang-toggle').textContent = state.lang === 'en' ? 'عربي' : 'English';
+            applyStaticTranslations();
+            render();
+        }
+        function applyStaticTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const dict = i18n[state.lang] || i18n.en;
+                if (dict[key] !== undefined || i18n.en[key] !== undefined) el.textContent = t(key);
+            });
+        }
+
+        // =========================================
+        // 10. RENDER (rebuilds appRoot.innerHTML — architecture unchanged)
+        // =========================================
+        function render() {
+            const appRoot = document.getElementById('app-root');
+            let html = '';
+            switch (state.page) {
+                case 'explore': html = renderExplore(); break;
+                case 'books': html = renderBooks(); break;
+                case 'categories': html = renderCategories(); break;
+                case 'admin': html = renderAdmin(); break;
+                case 'submit': html = renderSubmit(); break;
+                case 'about': html = renderAbout(); break;
+                case 'saved': html = renderSaved(); break;
+                case 'detail': html = renderDetail(); break;
+                default: html = renderHome();
+            }
+            appRoot.innerHTML = html;
+            updateNavActive();
+        }
+
+        function renderHome() {
+            const featured = resources.filter(r => r.featured).slice(0, 6);
+            const disciplines = ['industrial', 'uiux', '3d', 'motion', 'fonts', 'architecture'];
+            return `<section class="hero"><div class="hero-inner">
+                <div class="hero-eyebrow">${t('hero_eyebrow')}</div>
+                <h1 class="hero-title">Atrium<span class="hero-dot">.</span></h1>
+                <p class="hero-description">${t('hero_description')}</p>
+                <form class="hero-search" onsubmit="return handleHeroSearch(event)">
+                    <input type="text" placeholder="${t('search_resources')}" aria-label="${t('search')}">
+                    <button type="submit">${t('nav_explore')}</button>
+                </form>
+                <div class="hero-discovery">
+                    <div class="hero-discovery-label">${t('hero_explore_label')}</div>
+                    <div class="hero-disciplines">
+                        ${disciplines.map(d => `<button type="button" class="hero-discipline" onclick="exploreCategory('${d}')">${catLabel(d)}</button>`).join('')}
+                    </div>
+                    <button type="button" class="hero-view-all" onclick="navigate('explore')">${t('hero_view_all')}</button>
+                </div>
+            </div></section>
+            <section class="container">
+                <div class="section-header"><h2>${t('featured')}</h2><a href="#" onclick="navigate('explore');return false;">${t('hero_view_all')}</a></div>
+                <div class="grid grid-3">${featured.map(renderResourceCard).join('')}</div>
+            </section>`;
+        }
+        function handleHeroSearch(e) {
+            e.preventDefault();
+            state.searchQuery = (e.target.querySelector('input').value || '').trim();
+            state.visibleCount = 12;
+            navigate('explore');
+            return false;
+        }
+
+        function renderExplore() {
+            const filtered = getFilteredResources();
+            const total = filtered.length;
+            const visible = filtered.slice(0, state.visibleCount);
+            const activeCount = getActiveFilterCount();
+            const countText = t(activeCount ? 'results_matching' : 'results_count', { count: total });
+            const sortOpts = [['relevance', 'sort_relevance'], ['popularity', 'sort_popularity'], ['alpha', 'sort_alpha']]
+                .map(([v, k]) => `<option value="${v}" ${state.sortBy === v ? 'selected' : ''}>${t(k)}</option>`).join('');
+            return `<section class="container">
+                <h2>${t('explore_title')}</h2>
+                <div class="directory-layout">
+                    <aside class="filters-sidebar">${renderFilterSidebar()}</aside>
+                    <div>
+                        <div class="results-header">
+                            <span class="results-count" aria-live="polite">${countText}</span>
+                            <div class="results-controls">
+                                <input type="text" class="explore-search-input" placeholder="${t('search_resources')}" value="${esc(state.searchQuery)}" oninput="handleExploreSearch(this.value)" aria-label="${t('search')}">
+                                <select class="sort-select" onchange="handleSort(this.value)" aria-label="${t('sort_relevance')}">${sortOpts}</select>
+                                <button class="mobile-filter-btn" onclick="openMobileFilters()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+                                    ${t('filters')}
+                                    ${activeCount ? `<span class="filter-badge">${activeCount}</span>` : ''}
+                                </button>
+                            </div>
+                        </div>
+                        ${activeCount ? renderActiveFiltersBar() : ''}
+                        <div class="results-transition">
+                            ${total === 0
+                                ? `<div class="empty-state"><h3>${t('no_results_title')}</h3><p>${t('no_results_desc')}</p></div>`
+                                : `<div class="grid grid-3">${visible.map(renderResourceCard).join('')}</div>`}
+                            ${total > state.visibleCount ? `<div class="load-more-wrap"><button class="btn btn-outline" onclick="loadMore()">${t('load_more')}</button></div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </section>`;
+        }
+
+        function renderFilterSidebar() {
+            return getFilterGroups().map(g => `
+                <div class="filter-group">
+                    <div class="filter-title">${t(g.labelKey)}</div>
+                    <div class="filter-list">
+                        ${g.options.map(o => `
+                            <label class="filter-item">
+                                <input type="checkbox" ${state.activeFilters[g.type].has(o.value) ? 'checked' : ''} onclick="toggleFilter('${g.type}','${o.value}')">
+                                <span>${o.label}</span>
+                                <span class="count">${o.count}</span>
+                            </label>`).join('')}
+                    </div>
+                </div>`).join('');
+        }
+
+        function renderActiveFiltersBar() {
+            const chips = [];
+            ['category', 'pricing', 'language'].forEach(type => {
+                state.activeFilters[type].forEach(value => {
+                    const label = getFilterLabel(type, value);
+                    chips.push(`<div class="active-filter">${label}<button onclick="toggleFilter('${type}','${value}')" aria-label="${esc(label)}">&times;</button></div>`);
+                });
+            });
+            return `<div class="active-filters-bar">${chips.join('')}<button class="btn btn-sm btn-outline" onclick="clearAllFilters()">${t('clear_all')}</button></div>`;
+        }
+
+        function renderResourceCard(r) {
+            const cta = r.type === 'tool' ? t('open_tool') : (r.type === 'course' ? t('view_course') : t('visit_website'));
+            const saved = isSaved('r:' + r.id);
+            return `<div class="card">
+                <div class="card-header">
+                    <div class="card-icon">${r.name.charAt(0)}</div>
+                    <div style="min-width:0">
+                        <div class="card-title" style="cursor:pointer" onclick="openDetail('resource',${r.id})">${r.name}</div>
+                        <span class="badge">${t(r.pricing)}</span>
+                    </div>
+                </div>
+                <p class="card-desc">${r.description}</p>
+                <div class="card-footer">
+                    <span class="tag" onclick="toggleFilter('category','${r.category}')">${catLabel(r.category)}</span>
+                    <button class="btn btn-sm btn-primary" style="margin-inline-start:auto" onclick="window.open('${r.url}','_blank','noopener')">${cta}</button>
+                    <button class="icon-btn" onclick="toggleSave('r:${r.id}');render()" aria-label="${t('save')}">${bookmarkIcon(saved)}</button>
+                </div>
+            </div>`;
+        }
+
+        function renderBooks() {
+            return `<section class="container">
+                <div class="section-header"><h2>${t('nav_books')}</h2></div>
+                <div class="grid grid-3">${books.map(renderBookCard).join('')}</div>
+            </section>`;
+        }
+        function renderBookCard(b) {
+            return `<div class="card book-card" style="cursor:pointer" onclick="openDetail('book',${b.id})">
+                <div class="book-cover" style="display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:var(--accent)">${b.title.charAt(0)}</div>
+                <div style="display:flex;flex-direction:column;min-width:0">
+                    <div class="card-title">${b.title}</div>
+                    <p class="card-desc">${b.author} \u00b7 ${b.year}</p>
+                    <div class="card-footer" style="margin-top:auto">
+                        <span class="tag">${catLabel(b.category)}</span>
+                        <span class="badge" style="margin-inline-start:auto">${t(b.accessType)}</span>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderCategories() {
+            return `<section class="container">
+                <h2>${t('nav_categories')}</h2>
+                <div class="grid grid-3">
+                    ${CATEGORIES.map(c => `
+                        <div class="card" style="cursor:pointer" onclick="exploreCategory('${c.id}')">
+                            <div class="card-header">
+                                <div class="card-icon">${c.en.charAt(0)}</div>
+                                <div><div class="card-title">${c[state.lang]}</div></div>
+                            </div>
+                            <p class="card-desc">${t('results_count', { count: countResources('category', c.id) })}</p>
+                        </div>`).join('')}
+                </div>
+            </section>`;
+        }
+
+        function renderSaved() {
+            const items = [
+                ...resources.filter(r => isSaved('r:' + r.id)).map(renderResourceCard),
+                ...books.filter(b => isSaved('b:' + b.id)).map(renderBookCard)
+            ];
+            return `<section class="container">
+                <h2>${t('saved')}</h2>
+                ${items.length ? `<div class="grid grid-3">${items.join('')}</div>` : `<div class="empty-state"><h3>${t('saved')}</h3><p>${t('no_results')}</p></div>`}
+            </section>`;
+        }
+
+        function renderAbout() {
+            return `<section class="container" style="max-width:640px">
+                <h2>${t('about_atrium')}</h2>
+                <p class="hero-description" style="margin-top:16px">${t('footer_about')}</p>
+            </section>`;
+        }
+
+        function renderSubmit() {
+            const editing = state.editingId ? resources.find(r => r.id === state.editingId) : null;
+            return `<section class="container" style="max-width:640px">
+                <h2>${editing ? t('edit_resource') : t('submit_resource')}</h2>
+                <form onsubmit="return submitResourceForm(event)">
+                    <div class="form-group"><label class="form-label" for="sf-name">${t('form_name')}</label><input id="sf-name" class="form-input" required value="${editing ? esc(editing.name) : ''}"></div>
+                    <div class="form-group"><label class="form-label" for="sf-url">${t('form_url')}</label><input id="sf-url" class="form-input" type="url" value="${editing ? esc(editing.url) : ''}"></div>
+                    <div class="form-grid">
+                        <div class="form-group"><label class="form-label" for="sf-cat">${t('category')}</label>
+                            <select id="sf-cat" class="form-select">${CATEGORIES.map(c => `<option value="${c.id}" ${editing && editing.category === c.id ? 'selected' : ''}>${c[state.lang]}</option>`).join('')}</select></div>
+                        <div class="form-group"><label class="form-label" for="sf-price">${t('pricing')}</label>
+                            <select id="sf-price" class="form-select">${['free', 'freemium', 'paid'].map(p => `<option value="${p}" ${editing && editing.pricing === p ? 'selected' : ''}>${t(p)}</option>`).join('')}</select></div>
+                    </div>
+                    <div class="form-group"><label class="form-label" for="sf-desc">${t('form_desc')}</label><textarea id="sf-desc" class="form-textarea">${editing ? esc(editing.description) : ''}</textarea></div>
+                    <div style="display:flex;gap:12px;margin-top:8px">
+                        <button class="btn btn-primary" type="submit">${t('save_resource')}</button>
+                        <button class="btn btn-outline" type="button" onclick="navigate('explore')">${t('cancel')}</button>
+                    </div>
+                </form>
+            </section>`;
+        }
+        function submitResourceForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('sf-name').value.trim();
+            if (!name) return false;
+            const url = document.getElementById('sf-url').value.trim() || '#';
+            const category = document.getElementById('sf-cat').value;
+            const pricing = document.getElementById('sf-price').value;
+            const desc = document.getElementById('sf-desc').value.trim();
+            if (state.editingId) {
+                const r = resources.find(r => r.id === state.editingId);
+                if (r) { r.name = name; r.url = url; r.category = category; r.pricing = pricing; r.description = desc; }
+                state.editingId = null;
+            } else {
+                resources.unshift(R(name, url, category, pricing, state.lang === 'ar' ? 'arabic' : 'english', 'website', 50, [], false, desc));
+            }
+            navigate('explore');
+            return false;
+        }
+
+        function renderAdmin() {
+            const tab = state.adminTab || 'resources';
+            let table;
+            if (tab === 'books') {
+                table = `<table class="admin-table">
+                    <thead><tr><th>${t('title')}</th><th>${t('author')}</th><th>${t('year')}</th><th>${t('access_type')}</th><th>${t('actions')}</th></tr></thead>
+                    <tbody>${books.map(b => `<tr>
+                        <td>${b.title}</td><td>${b.author}</td><td>${b.year}</td><td>${t(b.accessType)}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="deleteBook(${b.id})">${t('delete')}</button></td>
+                    </tr>`).join('')}</tbody>
+                </table>`;
+            } else {
+                table = `<table class="admin-table">
+                    <thead><tr><th>${t('title')}</th><th>${t('category')}</th><th>${t('pricing')}</th><th>${t('status')}</th><th>${t('actions')}</th></tr></thead>
+                    <tbody>${resources.map(r => `<tr>
+                        <td>${r.name}</td><td>${catLabel(r.category)}</td><td>${t(r.pricing)}</td>
+                        <td><span class="badge badge-success">${t('active')}</span></td>
+                        <td><button class="btn btn-sm btn-outline" onclick="editResource(${r.id})">${t('edit')}</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteResource(${r.id})">${t('delete')}</button></td>
+                    </tr>`).join('')}</tbody>
+                </table>`;
+            }
+            return `<section class="container">
+                <div class="admin-header">
+                    <h2 style="margin-bottom:0">${t('admin_panel')}</h2>
+                    <nav class="admin-nav">
+                        <a href="#" class="${tab === 'resources' ? 'active' : ''}" onclick="setAdminTab('resources');return false;">${t('manage_resources')}</a>
+                        <a href="#" class="${tab === 'books' ? 'active' : ''}" onclick="setAdminTab('books');return false;">${t('manage_books')}</a>
+                    </nav>
+                </div>
+                ${table}
+                ${tab === 'resources' ? `<div class="load-more-wrap"><button class="btn btn-primary" onclick="state.editingId=null;navigate('submit')">${t('add_resource')}</button></div>` : ''}
+            </section>`;
+        }
+        function setAdminTab(tab) { state.adminTab = tab; render(); }
+        function editResource(id) { state.editingId = id; navigate('submit'); }
+        function deleteResource(id) { const i = resources.findIndex(r => r.id === id); if (i > -1) resources.splice(i, 1); render(); }
+        function deleteBook(id) { const i = books.findIndex(b => b.id === id); if (i > -1) books.splice(i, 1); render(); }
+
+        function renderDetail() {
+            const isBook = state.detailType === 'book';
+            const item = isBook ? books.find(b => b.id === state.detailId) : resources.find(r => r.id === state.detailId);
+            if (!item) return `<section class="container detail-layout"><p class="muted">${t('no_results')}</p></section>`;
+            const key = (isBook ? 'b:' : 'r:') + item.id;
+            const saved = isSaved(key);
+            let cover, meta, cta, actions;
+            if (isBook) {
+                cover = `<div class="book-cover" style="display:flex;align-items:center;justify-content:center;width:100%;max-width:240px;height:340px;font-size:3rem;font-weight:700;color:var(--accent);box-shadow:var(--shadow-md)">${item.title.charAt(0)}</div>`;
+                meta = `<dl class="detail-meta">
+                    <dt>${t('author')}</dt><dd>${item.author}</dd>
+                    <dt>${t('publisher')}</dt><dd>${item.publisher || '\u2014'}</dd>
+                    <dt>${t('year')}</dt><dd>${item.year}</dd>
+                    <dt>${t('pages')}</dt><dd>${item.pages}</dd>
+                    <dt>${t('category')}</dt><dd>${catLabel(item.category)}</dd>
+                    <dt>${t('language')}</dt><dd>${langLabel(item.language)}</dd>
+                    <dt>${t('access_type')}</dt><dd>${t(item.accessType)}</dd>
+                    <dt>${t('tags')}</dt><dd>${item.tags.join(', ')}</dd>
+                </dl>`;
+                cta = t('access_book');
+            } else {
+                cover = `<div class="card-icon" style="width:100%;max-width:240px;height:160px;font-size:3rem;border-radius:var(--radius-lg)">${item.name.charAt(0)}</div>`;
+                meta = `<dl class="detail-meta">
+                    <dt>${t('resource_type')}</dt><dd>${item.type}</dd>
+                    <dt>${t('category')}</dt><dd>${catLabel(item.category)}</dd>
+                    <dt>${t('pricing')}</dt><dd>${t(item.pricing)}</dd>
+                    <dt>${t('language')}</dt><dd>${langLabel(item.language)}</dd>
+                    <dt>${t('tags')}</dt><dd>${item.tags.join(', ')}</dd>
+                </dl>`;
+                cta = item.type === 'tool' ? t('open_tool') : (item.type === 'course' ? t('view_course') : t('visit_website'));
+            }
+            actions = `<div class="detail-actions">
+                <button class="btn btn-primary" onclick="window.open('${item.url}','_blank','noopener')">${cta}</button>
+                <button class="btn btn-outline" onclick="toggleSave('${key}');render()">${saved ? '\u2713 ' + t('saved') : t('save')}</button>
+                <button class="btn btn-outline" onclick="reportBroken(this)">${t('report_broken')}</button>
+            </div>`;
+            const related = isBook ? [] : resources.filter(r => r.category === item.category && r.id !== item.id).slice(0, 3);
+            return `<section class="container detail-layout">
+                <a href="#" class="back-link" onclick="navigate('explore');return false;">&larr; ${t('nav_explore')}</a>
+                <div class="detail-grid">
+                    <div>${cover}${actions}</div>
+                    <div>
+                        <h1 style="font-size:2rem">${isBook ? item.title : item.name}</h1>
+                        <p style="margin-top:8px">${item.description}</p>
+                        ${meta}
+                        ${related.length ? `<h3 style="margin-top:32px">${t('related_resources')}</h3><div class="grid grid-3">${related.map(renderResourceCard).join('')}</div>` : ''}
+                    </div>
+                </div>
+            </section>`;
+        }
+
+        function openDetail(type, id) {
+            state.page = 'detail';
+            state.detailType = type;
+            state.detailId = id;
+            window.scrollTo(0, 0);
+            render();
+        }
+        function toggleSave(key) {
+            if (state.saved.has(key)) state.saved.delete(key); else state.saved.add(key);
+        }
+        function reportBroken(el) { el.outerHTML = '<span class="muted">\u2713 ' + t('report_broken') + '</span>'; }
+
+        // =========================================
+        // 11. SEARCH OVERLAY
+        // =========================================
+        let searchItems = [], searchSel = 0;
+        function openSearch() {
+            document.getElementById('search-overlay').classList.add('active');
+            const inp = document.getElementById('search-input');
+            inp.value = '';
+            searchItems = []; searchSel = 0;
+            document.getElementById('search-results').innerHTML = '';
+            setTimeout(() => inp.focus(), 0);
+        }
+        function closeSearch() { document.getElementById('search-overlay').classList.remove('active'); }
+        function renderSearchResults(q) {
+            const box = document.getElementById('search-results');
+            q = (q || '').trim().toLowerCase();
+            if (!q) { box.innerHTML = ''; searchItems = []; searchSel = 0; return; }
+            const res = resources.filter(r => hay(r).includes(q)).slice(0, 7);
+            const bks = books.filter(b => hay(b).includes(q)).slice(0, 4);
+            searchItems = [];
+            res.forEach(r => searchItems.push({ type: 'resource', id: r.id, title: r.name, desc: catLabel(r.category) }));
+            bks.forEach(b => searchItems.push({ type: 'book', id: b.id, title: b.title, desc: b.author }));
+            searchSel = 0;
+            const gTitle = label => '<div class="search-group-title">' + (state.lang === 'ar' ? (label === 'Books' ? 'الكتب' : 'الموارد') : label) + '</div>';
+            let html = '';
+            if (res.length) html += gTitle('Resources');
+            for (let i = 0; i < res.length; i++) html += searchItemHtml(i);
+            if (bks.length) html += gTitle('Books');
+            for (let j = 0; j < bks.length; j++) html += searchItemHtml(res.length + j);
+            if (!searchItems.length) html = '<div class="search-group-title">' + t('no_results') + '</div>';
+            box.innerHTML = html;
+        }
+        function searchItemHtml(idx) {
+            const it = searchItems[idx];
+            return '<div class="search-item' + (idx === searchSel ? ' active' : '') + '" data-idx="' + idx + '" onclick="openSearchItem(\'' + it.type + '\',' + it.id + ')">'
+                + '<span class="search-item-title">' + it.title + '</span>'
+                + '<span class="search-item-desc">' + it.desc + '</span></div>';
+        }
+        function updateSearchActive() {
+            document.querySelectorAll('#search-results .search-item').forEach(el => {
+                el.classList.toggle('active', Number(el.getAttribute('data-idx')) === searchSel);
+            });
+        }
+        function searchKeydown(e) {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                if (!searchItems.length) return;
+                e.preventDefault();
+                searchSel += e.key === 'ArrowDown' ? 1 : -1;
+                searchSel = (searchSel + searchItems.length) % searchItems.length;
+                updateSearchActive();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const it = searchItems[searchSel];
+                if (it) openSearchItem(it.type, it.id);
+            }
+        }
+        function openSearchItem(type, id) { closeSearch(); openDetail(type, id); }
+
+        document.addEventListener('keydown', function (e) {
+            if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); openSearch(); }
+            else if (e.key === 'Escape') { closeSearch(); closeMobileFilters(); }
+        });
+
+        // =========================================
+        // 12. FILTER TRANSITION LAYER (approved UX — unchanged)
+        // =========================================
+        (function () {
+            var OUT_MS   = 120; // old-results fade-out; keep in sync with --fx-out
+            var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+            var outTimer = null;
+
+            function reducedMotion() { return reduceMq.matches; }
+            function resultsRegion() { return document.querySelector('#app-root .results-transition'); }
+
+            function filterArgsOf(el) {
+                if (!el || !el.getAttribute) return null;
+                var m = (el.getAttribute('onclick') || '')
+                    .match(/['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]/);
+                return m ? { type: m[1], value: m[2] } : null;
+            }
+
+            function isFilterActive(type, value) {
+                try {
+                    if (typeof state === 'undefined' || !state || !state.activeFilters) return true;
+                    var f = state.activeFilters[type];
+                    if (f == null) return false;
+                    if (typeof f.has === 'function') return f.has(value);
+                    if (Array.isArray(f)) return f.indexOf(value) !== -1;
+                    return String(f) === String(value);
+                } catch (e) { return true; }
+            }
+
+            function chipLabel(chip) {
+                return (chip.textContent || '').replace(/[\u00d7\u2715\u2716]\s*$/, '').trim();
+            }
+
+            function ensureResultsWrapper() {
+                var existing = resultsRegion();
+                if (existing) return existing;
+
+                var bar    = document.querySelector('#app-root .active-filters-bar');
+                var header = document.querySelector('#app-root .results-header');
+                var anchor = null;
+                if (bar && (!header || (bar.parentElement === header.parentElement &&
+                         (header.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING)))) {
+                    anchor = bar;
+                } else if (header) { anchor = header; }
+                else if (bar)    { anchor = bar; }
+                if (!anchor || !anchor.parentElement) return null;
+
+                var parent = anchor.parentElement;
+                var wrap = document.createElement('div');
+                wrap.className = 'results-transition';
+                var node = anchor.nextElementSibling, moved = false;
+                while (node) {
+                    var next = node.nextElementSibling;
+                    wrap.appendChild(node);
+                    moved = true;
+                    node = next;
+                }
+                if (moved) parent.appendChild(wrap);
+                return moved ? wrap : null;
+            }
+
+            function primeInstantFeedback() {
+                document.querySelectorAll('.filter-item input[type="checkbox"]').forEach(function (cb) {
+                    var args = filterArgsOf(cb);
+                    if (!args) return;
+                    var active = isFilterActive(args.type, args.value);
+                    if (cb.checked !== active) cb.checked = active;
+                    var item = cb.closest('.filter-item');
+                    if (item) item.classList.toggle('is-active', active);
+                });
+                document.querySelectorAll('.active-filters-bar .active-filter').forEach(function (chip) {
+                    var args = filterArgsOf(chip.querySelector('button'));
+                    if (args && !isFilterActive(args.type, args.value)) chip.classList.add('is-removing');
+                });
+            }
+
+            function renderFilterUpdate() {
+                var prevLabels = Array.prototype.map.call(
+                    document.querySelectorAll('.active-filters-bar .active-filter'), chipLabel);
+                var prevCountEl = document.querySelector('.results-count');
+                var prevCount = prevCountEl ? prevCountEl.textContent : '';
+
+                render(); // ← the existing render(), unmodified
+
+                if (reducedMotion()) return;
+
+                var wrap = ensureResultsWrapper();
+                if (wrap) wrap.classList.add('is-entering');
+
+                var count = document.querySelector('.results-count');
+                if (count && count.textContent !== prevCount) count.classList.add('is-updating');
+
+                var i = 0;
+                document.querySelectorAll('.active-filters-bar .active-filter').forEach(function (chip) {
+                    if (prevLabels.indexOf(chipLabel(chip)) === -1) {
+                        chip.style.animationDelay = Math.min(i * 30, 120) + 'ms';
+                        chip.classList.add('is-entering');
+                        i++;
+                    }
+                });
+            }
+
+            window.renderWithFilterTransition = function () {
+                clearTimeout(outTimer);
+
+                if (reducedMotion()) { renderFilterUpdate(); return; }
+
+                var wrap = resultsRegion();
+                if (!wrap) { renderFilterUpdate(); return; }
+
+                primeInstantFeedback();
+
+                wrap.classList.remove('is-entering');
+                void wrap.offsetWidth;
+                wrap.classList.add('is-exiting');
+
+                outTimer = setTimeout(renderFilterUpdate, OUT_MS);
+            };
+
+            document.addEventListener('change', function (e) {
+                var target = e.target;
+                if (target && target.matches && target.matches('.filter-item input[type="checkbox"]')) {
+                    var item = target.closest('.filter-item');
+                    if (item) item.classList.toggle('is-active', target.checked);
+                }
+            }, true);
+
+            var appRoot = document.getElementById('app-root');
+            if (appRoot && window.MutationObserver) {
+                new MutationObserver(function () { ensureResultsWrapper(); })
+                    .observe(appRoot, { childList: true });
+            }
+        })();
+
+        // =========================================
+        // 13. INIT + PROGRAMMATIC DATA VERIFICATION
+        // =========================================
+        applyStaticTranslations();
+        render();
+
+        (function verifyDataset() {
+            var names = resources.map(function (r) { return r.name; });
+            var dupNames = names.filter(function (n, i) { return names.indexOf(n) !== i; });
+            var perCat = {};
+            resources.forEach(function (r) { perCat[r.category] = (perCat[r.category] || 0) + 1; });
+            console.log('[Atrium data check] resources: ' + resources.length +
+                ' | categories: ' + CATEGORIES.length + ' | books: ' + books.length +
+                ' | duplicate exact names: ' + (dupNames.length ? JSON.stringify(dupNames) : 'none') +
+                ' | per-category: ', perCat);
+        })();
+    </script>
+</body>
+</html>
