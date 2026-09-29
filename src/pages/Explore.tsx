@@ -37,7 +37,7 @@ export function Explore() {
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[232px_minmax(0,1fr)] xl:gap-14">
         <aside className="hidden lg:block">
-          <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pb-8 pe-3">
+          <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pb-8 pe-3" style={{ paddingRight: "18px", width: "263px" }}>
             <FilterList groups={groups} selected={activeFilters} onToggle={toggleFilter} />
           </div>
         </aside>

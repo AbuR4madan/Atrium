@@ -54,12 +54,7 @@ export function Header() {
           </nav>
 
           <div className="ms-auto flex items-center gap-1">
-            <button
-              type="button"
-              onClick={openSearch}
-              aria-label={t('search')}
-              className="me-1 flex h-9 items-center gap-2 rounded-md border border-line bg-bg px-2.5 text-sm text-muted transition-[border-color,color] duration-150 hover:border-line-strong hover:text-ink lg:w-60">
-              
+            <button type="button" onClick={openSearch} aria-label={t('search')} className="me-1 flex h-9 items-center gap-2 rounded-md border border-line bg-bg px-2.5 text-sm text-muted transition-[border-color,color] duration-150 hover:border-line-strong hover:text-ink lg:w-60" style={{ paddingLeft: "22px", width: "591px", height: "34px" }}>
               <SearchIcon className="h-4 w-4 shrink-0" />
               <span className="hidden lg:inline">{t('search')}</span>
               <kbd className="ms-auto hidden rounded border border-line bg-surface px-1.5 py-0.5 font-mono text-[10px] lg:inline">⌘K</kbd>
